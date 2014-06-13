@@ -21,7 +21,7 @@ def get_env_setting(setting):
 
 ########## HOST CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.5/releases/1.5/#allowed-hosts-required-in-production
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['appbuddy.gobuzz.mobi']
 ########## END HOST CONFIGURATION
 
 ########## EMAIL CONFIGURATION
@@ -51,7 +51,16 @@ SERVER_EMAIL = EMAIL_HOST_USER
 ########## END EMAIL CONFIGURATION
 
 ########## DATABASE CONFIGURATION
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'appbuddydb',
+        'USER': 'appbuddy',
+        'PASSWORD': 'buddy',
+        'HOST': '192.168.188.122',
+        'PORT': '5432',
+    }
+}
 ########## END DATABASE CONFIGURATION
 
 
