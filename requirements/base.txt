@@ -15,3 +15,5 @@ django-mailgun
 
 requests
 protobuf
+
+django-hstore

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import PushNotificatonRegistration, AppInfo, Category, AgentInfo
+from .models import PushNotificatonRegistration, AppInfo, Category, AgentInfo, AppBuddyUser, DemoHStore
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -21,3 +21,5 @@ admin.site.register(PushNotificatonRegistration, PushNotificationRegistrationAdm
 admin.site.register(AppInfo, AppInfoAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(AgentInfo, BaseAdmin)
+admin.site.register(AppBuddyUser, BaseAdmin)
+admin.site.register(DemoHStore, BaseAdmin)

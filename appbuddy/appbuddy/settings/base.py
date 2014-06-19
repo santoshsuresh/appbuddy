@@ -246,6 +246,7 @@ WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 INSTALLED_APPS += (
     # Database migration helpers:
     'south',
+    'django_hstore',
 )
 # Don't need to use South when setting up a test database.
 SOUTH_TESTS_MIGRATE = False
@@ -266,4 +267,7 @@ REST_FRAMEWORK = {
 GOOGLE_LOGIN_ID = 'devamanishareeka@gmail.com'
 GOOGLE_PASSWORD = 'lovemeloveme'
 ANDROID_DEVICE_ID = '3e76c5ae927b5931'
+
+
+SOUTH_DATABASE_ADAPTERS = {'default': 'south.db.postgresql_psycopg2'}
 
