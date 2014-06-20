@@ -22,8 +22,8 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now)),
             ('modified', self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now)),
-            ('boxIdentifier', self.gf('django.db.models.fields.IntegerField')()),
-            ('deviceType', self.gf('django.db.models.fields.CharField')(default='tplink', max_length=20)),
+            ('box_identifier', self.gf('django.db.models.fields.IntegerField')()),
+            ('device_type', self.gf('django.db.models.fields.CharField')(default='tplink', max_length=20)),
             ('city', self.gf('django.db.models.fields.related.ForeignKey')(related_name='devices', to=orm['buddy.CityInfo'])),
         ))
         db.send_create_signal(u'buddy', ['DeviceInfo'])
@@ -95,14 +95,14 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=75)),
             ('address', self.gf('django.db.models.fields.TextField')()),
-            ('mobileNumber', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
+            ('mobile_number', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
             ('city', self.gf('django.db.models.fields.related.ForeignKey')(related_name='agents', to=orm['buddy.CityInfo'])),
             ('state', self.gf('django.db.models.fields.CharField')(default='Karnataka', max_length=50)),
-            ('pinCode', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('pin_code', self.gf('django.db.models.fields.PositiveIntegerField')()),
             ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('agentId', self.gf('django.db.models.fields.PositiveIntegerField')(default=None, null=True, blank=True)),
+            ('agent_id', self.gf('django.db.models.fields.PositiveIntegerField')(default=None, null=True, blank=True)),
             ('photograph', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
-            ('validatedOn', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
+            ('validated_on', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
         ))
         db.send_create_signal(u'buddy', ['AgentInfo'])
 
@@ -114,9 +114,9 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=75)),
             ('address', self.gf('django.db.models.fields.TextField')()),
-            ('mobileNumber', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
+            ('mobile_number', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
             ('city', self.gf('django.db.models.fields.related.ForeignKey')(related_name='partners', to=orm['buddy.CityInfo'])),
-            ('numberOfStores', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('number_of_stores', self.gf('django.db.models.fields.PositiveIntegerField')()),
         ))
         db.send_create_signal(u'buddy', ['LocationPartner'])
 
@@ -131,12 +131,12 @@ class Migration(SchemaMigration):
             ('footFall', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('area', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('city', self.gf('django.db.models.fields.related.ForeignKey')(related_name='locations', to=orm['buddy.CityInfo'])),
-            ('landlineNumber', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('storeManagerName', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('storeManagerNumber', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('preferredDays', self.gf('django.db.models.fields.CharField')(default='all', max_length=20)),
-            ('preferredTime', self.gf('django.db.models.fields.CharField')(default='all', max_length=20)),
-            ('deviceInfo', self.gf('django.db.models.fields.related.ForeignKey')(related_name='locations', to=orm['buddy.DeviceInfo'])),
+            ('landline_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('store_manager_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('store_manager_number', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('preferred_days', self.gf('django.db.models.fields.CharField')(default='all', max_length=20)),
+            ('preferred_time', self.gf('django.db.models.fields.CharField')(default='all', max_length=20)),
+            ('device_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='locations', to=orm['buddy.DeviceInfo'])),
             ('agent', self.gf('django.db.models.fields.related.ForeignKey')(related_name='locations', to=orm['buddy.AgentInfo'])),
         ))
         db.send_create_signal(u'buddy', ['LocationInfo'])
@@ -146,21 +146,41 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now)),
             ('modified', self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now)),
-            ('deviceId', self.gf('django.db.models.fields.CharField')(max_length=32)),
+            ('device_id', self.gf('django.db.models.fields.CharField')(max_length=32)),
             ('imei', self.gf('django.db.models.fields.CharField')(max_length=32)),
-            ('macAddress', self.gf('django.db.models.fields.CharField')(max_length=32)),
-            ('agentInfo', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['buddy.AgentInfo'])),
-            ('deviceInfo', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['buddy.DeviceInfo'])),
-            ('locationInfo', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['buddy.LocationInfo'])),
+            ('mac_address', self.gf('django.db.models.fields.CharField')(max_length=32)),
+            ('agent_info', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['buddy.AgentInfo'])),
+            ('device_info', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['buddy.DeviceInfo'])),
+            ('location_info', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['buddy.LocationInfo'])),
             ('make', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('model', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('appVersion', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('osVersion', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('emailAddress', self.gf(u'django_hstore.fields.DictionaryField')()),
-            ('phoneNumber', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('app_version', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('os_version', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('email_address', self.gf(u'django_hstore.fields.DictionaryField')()),
+            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('app_packages', self.gf(u'django_hstore.fields.DictionaryField')()),
         ))
         db.send_create_signal(u'buddy', ['AppBuddyUser'])
+
+        # Adding model 'DownloadLog'
+        db.create_table(u'buddy_downloadlog', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('created', self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now)),
+            ('modified', self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now)),
+            ('user_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='downloads', to=orm['buddy.AppBuddyUser'])),
+            ('device_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='installs', to=orm['buddy.DeviceInfo'])),
+            ('agent_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='downloads', to=orm['buddy.DeviceInfo'])),
+            ('ip_address', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('location_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='downloads', to=orm['buddy.LocationInfo'])),
+            ('version', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('app_info', self.gf('django.db.models.fields.related.ForeignKey')(related_name='downloads', to=orm['buddy.AppInfo'])),
+            ('app_name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('package_name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('status', self.gf('django.db.models.fields.CharField')(default='installing', max_length=15)),
+            ('operator', self.gf('django.db.models.fields.CharField')(default=None, max_length=50, null=True, blank=True)),
+            ('email_address', self.gf('django.db.models.fields.EmailField')(max_length=75)),
+        ))
+        db.send_create_signal(u'buddy', ['DownloadLog'])
 
 
     def backwards(self, orm):
@@ -194,43 +214,46 @@ class Migration(SchemaMigration):
         # Deleting model 'AppBuddyUser'
         db.delete_table(u'buddy_appbuddyuser')
 
+        # Deleting model 'DownloadLog'
+        db.delete_table(u'buddy_downloadlog')
+
 
     models = {
         u'buddy.agentinfo': {
             'Meta': {'object_name': 'AgentInfo'},
             'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'address': ('django.db.models.fields.TextField', [], {}),
-            'agentId': ('django.db.models.fields.PositiveIntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
+            'agent_id': ('django.db.models.fields.PositiveIntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'city': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'agents'", 'to': u"orm['buddy.CityInfo']"}),
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '75'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mobileNumber': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
+            'mobile_number': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'photograph': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'pinCode': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'pin_code': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'state': ('django.db.models.fields.CharField', [], {'default': "'Karnataka'", 'max_length': '50'}),
-            'validatedOn': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'})
+            'validated_on': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'})
         },
         u'buddy.appbuddyuser': {
             'Meta': {'object_name': 'AppBuddyUser'},
-            'agentInfo': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['buddy.AgentInfo']"}),
-            'appVersion': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'agent_info': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['buddy.AgentInfo']"}),
             'app_packages': (u'django_hstore.fields.DictionaryField', [], {}),
+            'app_version': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
-            'deviceId': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
-            'deviceInfo': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['buddy.DeviceInfo']"}),
-            'emailAddress': (u'django_hstore.fields.DictionaryField', [], {}),
+            'device_id': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'device_info': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['buddy.DeviceInfo']"}),
+            'email_address': (u'django_hstore.fields.DictionaryField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'imei': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
-            'locationInfo': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['buddy.LocationInfo']"}),
-            'macAddress': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'location_info': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': u"orm['buddy.LocationInfo']"}),
+            'mac_address': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
             'make': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
-            'osVersion': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'phoneNumber': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'os_version': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         u'buddy.appinfo': {
             'Meta': {'object_name': 'AppInfo'},
@@ -268,12 +291,30 @@ class Migration(SchemaMigration):
         },
         u'buddy.deviceinfo': {
             'Meta': {'object_name': 'DeviceInfo'},
-            'boxIdentifier': ('django.db.models.fields.IntegerField', [], {}),
+            'box_identifier': ('django.db.models.fields.IntegerField', [], {}),
             'city': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'devices'", 'to': u"orm['buddy.CityInfo']"}),
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
-            'deviceType': ('django.db.models.fields.CharField', [], {'default': "'tplink'", 'max_length': '20'}),
+            'device_type': ('django.db.models.fields.CharField', [], {'default': "'tplink'", 'max_length': '20'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'})
+        },
+        u'buddy.downloadlog': {
+            'Meta': {'object_name': 'DownloadLog'},
+            'agent_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'downloads'", 'to': u"orm['buddy.DeviceInfo']"}),
+            'app_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'downloads'", 'to': u"orm['buddy.AppInfo']"}),
+            'app_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
+            'device_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'installs'", 'to': u"orm['buddy.DeviceInfo']"}),
+            'email_address': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ip_address': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'location_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'downloads'", 'to': u"orm['buddy.LocationInfo']"}),
+            'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
+            'operator': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'package_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'status': ('django.db.models.fields.CharField', [], {'default': "'installing'", 'max_length': '15'}),
+            'user_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'downloads'", 'to': u"orm['buddy.AppBuddyUser']"}),
+            'version': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         u'buddy.locationinfo': {
             'Meta': {'object_name': 'LocationInfo'},
@@ -282,17 +323,17 @@ class Migration(SchemaMigration):
             'area': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'city': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'to': u"orm['buddy.CityInfo']"}),
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
-            'deviceInfo': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'to': u"orm['buddy.DeviceInfo']"}),
+            'device_info': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'to': u"orm['buddy.DeviceInfo']"}),
             'footFall': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'landlineNumber': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'landline_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'partner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'stores'", 'to': u"orm['buddy.LocationPartner']"}),
-            'preferredDays': ('django.db.models.fields.CharField', [], {'default': "'all'", 'max_length': '20'}),
-            'preferredTime': ('django.db.models.fields.CharField', [], {'default': "'all'", 'max_length': '20'}),
-            'storeManagerName': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'storeManagerNumber': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+            'preferred_days': ('django.db.models.fields.CharField', [], {'default': "'all'", 'max_length': '20'}),
+            'preferred_time': ('django.db.models.fields.CharField', [], {'default': "'all'", 'max_length': '20'}),
+            'store_manager_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'store_manager_number': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         u'buddy.locationpartner': {
             'Meta': {'object_name': 'LocationPartner'},
@@ -301,10 +342,10 @@ class Migration(SchemaMigration):
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '75'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mobileNumber': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
+            'mobile_number': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'numberOfStores': ('django.db.models.fields.PositiveIntegerField', [], {})
+            'number_of_stores': ('django.db.models.fields.PositiveIntegerField', [], {})
         },
         u'buddy.pushnotificatonregistration': {
             'Meta': {'object_name': 'PushNotificatonRegistration'},

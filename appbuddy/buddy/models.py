@@ -9,14 +9,22 @@ from .playapi.googleplay import GooglePlayAPI
 
 
 class CityInfo(TimeStampedModel):
-    name = models.CharField(max_length=100);
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
 
 
 class DeviceInfo(TimeStampedModel):
     TYPE_CHOICES = Choices(('BuzzBox', 'Buzz Box'), ('tplink', 'TP Link 3020'))
-    boxIdentifier = models.IntegerField()
-    deviceType = models.CharField(max_length=20, choices=TYPE_CHOICES, default='tplink')
+    box_identifier = models.IntegerField()
+    device_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='tplink')
     city = models.ForeignKey(CityInfo, related_name='devices')
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.box_identifier, self.city)
+
+
 
 
 class PushNotificatonRegistration(TimeStampedModel):
@@ -81,14 +89,17 @@ class AgentInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     address = models.TextField()
-    mobileNumber = models.CharField(max_length=20, unique=True)
+    mobile_number = models.CharField(max_length=20, unique=True)
     city = models.ForeignKey(CityInfo, related_name='agents')
     state = models.CharField(max_length=50, default='Karnataka')
-    pinCode = models.PositiveIntegerField()
+    pin_code = models.PositiveIntegerField()
     active = models.BooleanField(default=False)
-    agentId = models.PositiveIntegerField(blank=True, null=True, default=None)
+    agent_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
-    validatedOn = models.DateTimeField(blank=True, null=True, default=None)
+    validated_on = models.DateTimeField(blank=True, null=True, default=None)
+
+    def __unicode__(self):
+        return self.name
 
 
     def generate(self):
@@ -100,9 +111,12 @@ class LocationPartner(TimeStampedModel):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     address = models.TextField()
-    mobileNumber = models.CharField(max_length=20, unique=True)
+    mobile_number = models.CharField(max_length=20, unique=True)
     city = models.ForeignKey(CityInfo, related_name='partners')
-    numberOfStores = models.PositiveIntegerField()
+    number_of_stores = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return self.name
 
 
 class LocationInfo(TimeStampedModel):
@@ -114,28 +128,31 @@ class LocationInfo(TimeStampedModel):
     footFall = models.PositiveIntegerField(default=0)
     area = models.CharField(max_length=100, blank=True, null=True)
     city = models.ForeignKey(CityInfo, related_name='locations')
-    landlineNumber = models.CharField(max_length=20, blank=True, null=True)
-    storeManagerName = models.CharField(max_length=100)
-    storeManagerNumber = models.CharField(max_length=20)
-    preferredDays = models.CharField(max_length=20, choices=DAY_CHOICES, default='all')
-    preferredTime = models.CharField(max_length=20, choices=TIME_CHOICES, default='all')
-    deviceInfo = models.ForeignKey(DeviceInfo, related_name='locations')
-    agent = models.ForeignKey(AgentInfo, related_name='locations')
+    landline_number = models.CharField(max_length=20, blank=True, null=True)
+    store_manager_name = models.CharField(max_length=100)
+    store_manager_number = models.CharField(max_length=20)
+    preferred_days = models.CharField(max_length=20, choices=DAY_CHOICES, default='all')
+    preferred_time = models.CharField(max_length=20, choices=TIME_CHOICES, default='all')
+    device_info = models.ForeignKey(DeviceInfo, related_name='locations', default=None,blank=True,null=True)
+    agent = models.ForeignKey(AgentInfo, related_name='locations', default=None, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
 
 
 class AppBuddyUser(TimeStampedModel):
-    deviceId = models.CharField(max_length=32)
+    device_id = models.CharField(max_length=32)
     imei = models.CharField(max_length=32)
-    macAddress = models.CharField(max_length=32)
-    agentInfo = models.ForeignKey(AgentInfo)
-    deviceInfo = models.ForeignKey(DeviceInfo)
-    locationInfo = models.ForeignKey(LocationInfo)
+    mac_address = models.CharField(max_length=32)
+    agent_info = models.ForeignKey(AgentInfo)
+    device_info = models.ForeignKey(DeviceInfo)
+    location_info = models.ForeignKey(LocationInfo, default=None)
     make = models.CharField(max_length=50)
     model = models.CharField(max_length=50)
-    appVersion = models.CharField(max_length=50)
-    osVersion = models.CharField(max_length=50)
-    emailAddress = hstore.DictionaryField()
-    phoneNumber = models.CharField(max_length=50)
+    app_version = models.CharField(max_length=50)
+    os_version = models.CharField(max_length=50)
+    email_address = hstore.DictionaryField()
+    phone_number = models.CharField(max_length=50)
     app_packages = hstore.DictionaryField()
 
     objects = hstore.HStoreManager()
@@ -144,20 +161,19 @@ class AppBuddyUser(TimeStampedModel):
 class DownloadLog(TimeStampedModel):
     STATUS_CHOICES = Choices(('installing', 'Installing'), ('installed', 'Installed'), ('opened', 'Opened'),
                              ('reinstalled', 'Reinstalled'))
-    userInfo = models.ForeignKey(AppBuddyUser, related_name='downloads')
-    deviceInfo = models.ForeignKey(DeviceInfo, related_name='downloads')
-    agentInfo = models.ForeignKey(DeviceInfo, related_name='downloads')
-    ipAddress = models.CharField(max_length=20)
-    locationInfo = models.ForeignKey(LocationInfo, related_name='downloads')
+    user_info = models.ForeignKey(AppBuddyUser, related_name='downloads')
+    device_info = models.ForeignKey(DeviceInfo, related_name='installs')
+    agent_info = models.ForeignKey(DeviceInfo, related_name='downloads')
+    ip_address = models.CharField(max_length=20)
+    location_info = models.ForeignKey(LocationInfo, related_name='downloads')
     version = models.CharField(max_length=20)
-    appInfo = models.ForeignKey(AppInfo, related_name='downloads')
-    appName = models.CharField(max_length=200)
-    packageName = models.CharField(max_length=200)
+    app_info = models.ForeignKey(AppInfo, related_name='downloads')
+    app_name = models.CharField(max_length=200)
+    package_name = models.CharField(max_length=200)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='installing')
     operator = models.CharField(max_length=50, default=None, blank=True, null=True)
-    emailAddress = models.EmailField()
+    email_address = models.EmailField()
 
-    
 
 
 signals.post_save.connect(do_on_agent_save, sender=AgentInfo)
