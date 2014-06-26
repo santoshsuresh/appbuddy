@@ -17,3 +17,6 @@ requests
 protobuf
 
 django-hstore
+django-celery
+
+django-annoying

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import signals
 from django.core.mail import send_mail
 from django.db import models
@@ -23,8 +24,6 @@ class DeviceInfo(TimeStampedModel):
 
     def __unicode__(self):
         return "%s (%s)" % (self.box_identifier, self.city)
-
-
 
 
 class PushNotificatonRegistration(TimeStampedModel):
@@ -94,17 +93,13 @@ class AgentInfo(TimeStampedModel):
     state = models.CharField(max_length=50, default='Karnataka')
     pin_code = models.PositiveIntegerField()
     active = models.BooleanField(default=False)
-    agent_id = models.PositiveIntegerField(blank=True, null=True, default=None)
+    agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(25000), MaxValueValidator(35000)],
+                                           verbose_name='Agent Code')
     photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
     validated_on = models.DateTimeField(blank=True, null=True, default=None)
 
     def __unicode__(self):
         return self.name
-
-
-    def generate(self):
-        # should generate an agent id
-        pass
 
 
 class LocationPartner(TimeStampedModel):
@@ -133,11 +128,36 @@ class LocationInfo(TimeStampedModel):
     store_manager_number = models.CharField(max_length=20)
     preferred_days = models.CharField(max_length=20, choices=DAY_CHOICES, default='all')
     preferred_time = models.CharField(max_length=20, choices=TIME_CHOICES, default='all')
-    device_info = models.ForeignKey(DeviceInfo, related_name='locations', default=None,blank=True,null=True)
-    agent = models.ForeignKey(AgentInfo, related_name='locations', default=None, blank=True, null=True)
+    device_info = models.OneToOneField(DeviceInfo, related_name='locations', default=None, blank=True, null=True)
+    agent = models.OneToOneField(AgentInfo, related_name='locations', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
+
+    def _unassign_agent_from_other_locations(self):
+        print "Called..."
+        if self.agent is not None:
+            added_agent = self.agent
+            locations = self.agent.locations.all()
+            for location in locations:
+                location.agent = None
+                location.save()
+            self.agent = added_agent
+
+    def _unassign_device_from_other_locations(self):
+        if self.device_info is not None:
+            added_device = self.device_info
+            locations = self.device_info.locations.all()
+            for location in locations:
+                location.device_info = None
+                location.save()
+            self.device_info = added_device
+
+
+    def save(self, *args, **kwargs):
+        self._unassign_agent_from_other_locations()
+        self._unassign_device_from_other_locations()
+        super(LocationInfo, self).save(*args, **kwargs)
 
 
 class AppBuddyUser(TimeStampedModel):
@@ -154,6 +174,7 @@ class AppBuddyUser(TimeStampedModel):
     email_address = hstore.DictionaryField()
     phone_number = models.CharField(max_length=50)
     app_packages = hstore.DictionaryField()
+    install_count = models.IntegerField(default=0)
 
     objects = hstore.HStoreManager()
 
@@ -175,5 +196,4 @@ class DownloadLog(TimeStampedModel):
     email_address = models.EmailField()
 
 
-
-signals.post_save.connect(do_on_agent_save, sender=AgentInfo)
+# signals.post_save.connect(do_on_agent_save, sender=AgentInfo)
