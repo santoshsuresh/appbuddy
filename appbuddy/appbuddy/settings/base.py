@@ -274,3 +274,5 @@ ANDROID_DEVICE_ID = '3e76c5ae927b5931'
 
 SOUTH_DATABASE_ADAPTERS = {'default': 'south.db.postgresql_psycopg2'}
 
+APPLICATION_DOWNLOAD_ROOT = normpath(join(MEDIA_ROOT, 'apk'))
+

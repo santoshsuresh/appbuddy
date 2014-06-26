@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models import signals
 from django.core.mail import send_mail
 from django.db import models
 from django_hstore import hstore
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
+
+
 
 
 class CityInfo(TimeStampedModel):
@@ -54,7 +55,6 @@ class PushNotificatonRegistration(TimeStampedModel):
         verbose_name_plural = 'Push Notification Registrations'
 
 
-
 class Category(TimeStampedModel):
     name = models.CharField(max_length=100)
     where_clause = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -87,19 +87,17 @@ class AppInfo(TimeStampedModel):
         verbose_name = 'Application'
         verbose_name_plural = 'Applications'
 
-
     def _get_app_version_from_playstore(self):
         api = GooglePlayAPI(androidId=settings.ANDROID_DEVICE_ID)
         api.login(settings.GOOGLE_LOGIN_ID, settings.GOOGLE_PASSWORD)
         response = api.details(self.package_name)
         doc = response.docV2
-        print(doc.details.appDetails)
-        print(doc.details)
         self.app_version = doc.details.appDetails.versionCode
 
     def save(self, *args, **kwargs):
         self._get_app_version_from_playstore()
         super(AppInfo, self).save(*args, **kwargs)
+
 
 
 def do_on_agent_save(sender, instance, created, **kwargs):
@@ -197,7 +195,6 @@ class AppBuddyUser(TimeStampedModel):
     class Meta:
         verbose_name = 'Appbuddy User'
         verbose_name_plural = 'Appbuddy Users'
-
 
 
 class DownloadLog(TimeStampedModel):

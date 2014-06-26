@@ -3,7 +3,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from .serializers import AppBuddySerializer
 from .models import AppInfo, Category, PushNotificatonRegistration, AgentInfo, AppBuddyUser, DeviceInfo
-from .tasks import log_appbuddy_install
+from .tasks import log_appbuddy_install, download_app_from_playstore
 
 class PushNotificationViewSet(viewsets.ModelViewSet):
     model = PushNotificatonRegistration
