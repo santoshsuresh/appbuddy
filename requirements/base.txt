@@ -20,3 +20,4 @@ django-hstore
 django-celery
 
 django-annoying
+django-grappelli

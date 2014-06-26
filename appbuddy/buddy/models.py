@@ -12,6 +12,10 @@ from .playapi.googleplay import GooglePlayAPI
 class CityInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = 'City'
+        verbose_name_plural = 'Cities'
+
     def __unicode__(self):
         return self.name
 
@@ -21,6 +25,10 @@ class DeviceInfo(TimeStampedModel):
     box_identifier = models.IntegerField()
     device_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='tplink')
     city = models.ForeignKey(CityInfo, related_name='devices')
+
+    class Meta:
+        verbose_name = 'Appbuddy Device'
+        verbose_name_plural = 'Appbuddy Devices'
 
     def __unicode__(self):
         return "%s (%s)" % (self.box_identifier, self.city)
@@ -41,10 +49,20 @@ class PushNotificatonRegistration(TimeStampedModel):
     screen_height = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = 'Push Notification Registration'
+        verbose_name_plural = 'Push Notification Registrations'
+
+
 
 class Category(TimeStampedModel):
     name = models.CharField(max_length=100)
     where_clause = models.CharField(max_length=100, default=None, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
 
     def __unicode__(self):
         return self.name
@@ -64,6 +82,11 @@ class AppInfo(TimeStampedModel):
     thumbnail = models.ImageField(upload_to='thumbnails')
     categories = models.ManyToManyField(to=Category)
     min_android_version = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = 'Application'
+        verbose_name_plural = 'Applications'
+
 
     def _get_app_version_from_playstore(self):
         api = GooglePlayAPI(androidId=settings.ANDROID_DEVICE_ID)
@@ -98,6 +121,11 @@ class AgentInfo(TimeStampedModel):
     photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
     validated_on = models.DateTimeField(blank=True, null=True, default=None)
 
+    class Meta:
+        verbose_name = 'Promoter'
+        verbose_name_plural = 'Promoters'
+
+
     def __unicode__(self):
         return self.name
 
@@ -109,6 +137,11 @@ class LocationPartner(TimeStampedModel):
     mobile_number = models.CharField(max_length=20, unique=True)
     city = models.ForeignKey(CityInfo, related_name='partners')
     number_of_stores = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = 'Location Partner'
+        verbose_name_plural = 'Location Partners'
+
 
     def __unicode__(self):
         return self.name
@@ -131,32 +164,15 @@ class LocationInfo(TimeStampedModel):
     device_info = models.OneToOneField(DeviceInfo, related_name='locations', default=None, blank=True, null=True)
     agent = models.OneToOneField(AgentInfo, related_name='locations', default=None, blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'Location'
+        verbose_name_plural = 'Locations'
+
+
     def __unicode__(self):
         return self.name
 
-    def _unassign_agent_from_other_locations(self):
-        print "Called..."
-        if self.agent is not None:
-            added_agent = self.agent
-            locations = self.agent.locations.all()
-            for location in locations:
-                location.agent = None
-                location.save()
-            self.agent = added_agent
-
-    def _unassign_device_from_other_locations(self):
-        if self.device_info is not None:
-            added_device = self.device_info
-            locations = self.device_info.locations.all()
-            for location in locations:
-                location.device_info = None
-                location.save()
-            self.device_info = added_device
-
-
     def save(self, *args, **kwargs):
-        self._unassign_agent_from_other_locations()
-        self._unassign_device_from_other_locations()
         super(LocationInfo, self).save(*args, **kwargs)
 
 
@@ -177,6 +193,11 @@ class AppBuddyUser(TimeStampedModel):
     install_count = models.IntegerField(default=0)
 
     objects = hstore.HStoreManager()
+
+    class Meta:
+        verbose_name = 'Appbuddy User'
+        verbose_name_plural = 'Appbuddy Users'
+
 
 
 class DownloadLog(TimeStampedModel):

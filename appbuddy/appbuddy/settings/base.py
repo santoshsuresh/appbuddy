@@ -99,8 +99,8 @@ STATICFILES_DIRS = (
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 )
 ########## END STATIC FILE CONFIGURATION
 
@@ -187,6 +187,7 @@ DJANGO_APPS = (
     # 'django.contrib.humanize',
 
     # Admin panel and documentation:
+    'grappelli',
     'django.contrib.admin',
     # 'django.contrib.admindocs',
 )
@@ -247,6 +248,8 @@ INSTALLED_APPS += (
     # Database migration helpers:
     'south',
     'django_hstore',
+    'djcelery',
+    'buddy'
 )
 # Don't need to use South when setting up a test database.
 SOUTH_TESTS_MIGRATE = False
