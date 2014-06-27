@@ -1,23 +1,33 @@
-from rest_framework import viewsets,status
+from rest_framework import viewsets, status
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from .serializers import AppBuddySerializer
-from .models import AppInfo, Category, PushNotificatonRegistration, AgentInfo, AppBuddyUser, DeviceInfo
+from .models import AppInfo, Category, PushNotificatonRegistration, AgentInfo, AppBuddyUser, DeviceInfo, CityInfo, \
+    WhitelistUrl
 from .tasks import log_appbuddy_install, download_app_from_playstore
+
+
+class CityInfoViewSet(viewsets.ReadOnlyModelViewSet):
+    model = CityInfo
+
+
+class WhitelistUrlViewSet(viewsets.ReadOnlyModelViewSet):
+    model = WhitelistUrl
+
 
 class PushNotificationViewSet(viewsets.ModelViewSet):
     model = PushNotificatonRegistration
 
 
-class AppInfoViewSet(viewsets.ModelViewSet):
+class AppInfoViewSet(viewsets.ReadOnlyModelViewSet):
     model = AppInfo
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     model = Category
 
 
-class AgentViewSet(viewsets.ModelViewSet):
+class AgentViewSet(viewsets.ReadOnlyModelViewSet):
     model = AgentInfo
 
 
