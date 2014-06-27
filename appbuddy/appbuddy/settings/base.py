@@ -276,3 +276,6 @@ SOUTH_DATABASE_ADAPTERS = {'default': 'south.db.postgresql_psycopg2'}
 
 APPLICATION_DOWNLOAD_ROOT = normpath(join(MEDIA_ROOT, 'apk'))
 
+
+#Grappelli
+GRAPPELLI_ADMIN_TITLE='Telibrahma AppBuddy'

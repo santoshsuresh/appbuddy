@@ -1,0 +1,1 @@
+from buddy.tasks import download_app_from_playstore as downloader

@@ -8,8 +8,6 @@ from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
 
 
-
-
 class CityInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
 
@@ -63,9 +61,17 @@ class Category(TimeStampedModel):
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
-
     def __unicode__(self):
         return self.name
+
+
+class WhitelistUrl(TimeStampedModel):
+    TYPE_CHOICES = Choices(('proxy', 'Proxy'), ('dns', 'DNS'))
+    url = models.CharField(max_length=100)
+    type = models.CharField(max_length=10, default='proxy', choices=TYPE_CHOICES)
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.url, self.type)
 
 
 class AppInfo(TimeStampedModel):
@@ -73,15 +79,18 @@ class AppInfo(TimeStampedModel):
     description = models.TextField()
     package_name = models.CharField(max_length=100)
     market_url = models.CharField(max_length=255)
-    download_time_wifi = models.PositiveIntegerField()
-    download_time_3g = models.PositiveIntegerField()
-    download_time_edge = models.PositiveIntegerField()
+    download_time_wifi = models.PositiveIntegerField(default=0)
+    download_time_3g = models.PositiveIntegerField(default=0)
+    download_time_edge = models.PositiveIntegerField(default=0)
     active = models.BooleanField()
     open_on_install = models.BooleanField(default=True)
     app_version = models.CharField(max_length=50, default=None, blank=True, null=True)
     thumbnail = models.ImageField(upload_to='thumbnails')
     categories = models.ManyToManyField(to=Category)
-    min_android_version = models.CharField(max_length=10)
+    min_android_version = models.CharField(max_length=10, default=14)
+    cities = models.ManyToManyField('CityInfo', related_name='apps',)
+    whitelisted_urls = models.ManyToManyField('WhitelistUrl', related_name='apps')
+    download_size = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Application'
@@ -92,12 +101,15 @@ class AppInfo(TimeStampedModel):
         api.login(settings.GOOGLE_LOGIN_ID, settings.GOOGLE_PASSWORD)
         response = api.details(self.package_name)
         doc = response.docV2
+        self.download_size = doc.details.appDetails.installationSize
         self.app_version = doc.details.appDetails.versionCode
 
     def save(self, *args, **kwargs):
         self._get_app_version_from_playstore()
         super(AppInfo, self).save(*args, **kwargs)
 
+    def __unicode__(self):
+        return self.name
 
 
 def do_on_agent_save(sender, instance, created, **kwargs):
@@ -212,6 +224,3 @@ class DownloadLog(TimeStampedModel):
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='installing')
     operator = models.CharField(max_length=50, default=None, blank=True, null=True)
     email_address = models.EmailField()
-
-
-# signals.post_save.connect(do_on_agent_save, sender=AgentInfo)
