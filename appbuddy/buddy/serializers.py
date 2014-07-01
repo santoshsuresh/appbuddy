@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import AppInfo, AppBuddyUser
 
 
-class AppInfoSerialzer(serializers.ModelSerializer):
+class AppInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppInfo
 

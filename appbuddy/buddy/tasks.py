@@ -38,12 +38,8 @@ def log_appbuddy_install(*args, **kwargs):
     data = JSONParser().parse(stream)
     user = get_object_or_None(AppBuddyUser, device_id=data.get('device_id'))
     if user is None:
-        agent_info = None
         agent = get_object_or_None(AgentInfo, agent_id=data.get('agent_id'))
-        if len(agent) > 0:
-            agent_info = agent[0]
 
-        print agent
     pass
 
 
