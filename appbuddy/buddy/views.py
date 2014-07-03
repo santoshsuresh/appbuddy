@@ -37,8 +37,6 @@ class DeviceInfoUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('devices-list')
 
 
-class DeviceInfoDetailView(LoginRequiredMixin, DetailView):
-    model = DeviceInfo
 
 
 class AppBuddyUserList(APIView):

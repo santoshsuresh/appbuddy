@@ -68,7 +68,6 @@ class PushNotificatonRegistration(TimeStampedModel):
 
 class Category(TimeStampedModel):
     name = models.CharField(max_length=100)
-    where_clause = models.CharField(max_length=100, default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Category'

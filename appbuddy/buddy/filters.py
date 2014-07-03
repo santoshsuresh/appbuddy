@@ -9,7 +9,8 @@ class DeviceInfoFilter(FilterSet):
 
     class Meta:
         model = DeviceInfo
-        fields = ['city', 'device_type', 'box_identifier']
+        fields = ['city', 'box_identifier']
+        order_by = ['box_identifier', 'city']
 
     def __init__(self, *args, **kwargs):
         super(DeviceInfoFilter, self).__init__(*args, **kwargs)
