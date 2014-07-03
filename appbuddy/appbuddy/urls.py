@@ -9,7 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
                        url(r'^$', TemplateView.as_view(template_name='bracket.html')),
-                       url(r'^api/v1/', include('buddy.urls')),
+                       url(r'^appbuddy/', include('buddy.urls')),
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        # Examples:
                        # url(r'^$', 'appbuddy.views.home', name='home'),

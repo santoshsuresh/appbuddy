@@ -21,3 +21,5 @@ django-celery
 
 django-annoying
 django-grappelli
+
+django-crispy-forms

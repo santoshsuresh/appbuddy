@@ -45,9 +45,9 @@
 
             <h5 class="sidebartitle">Navigation</h5>
             <ul class="nav nav-pills nav-stacked nav-bracket">
-                <li><a href="index.html"><i class="fa fa-android"></i> <span>App Configuration</span></a></li>
-                <li><a href="index.html"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>
-                <li><a href="index.html"><i class="fa fa-th-list"></i> <span>Category</span></a></li>
+                <li><a href="/appbuddy/devices/"><i class="fa fa-desktop"></i> <span>Hotspot Configuration</span></a></li>
+                <li><a href="/"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>
+                <li><a href="/"><i class="fa fa-th-list"></i> <span>Category</span></a></li>
             </ul>
         </div>
         <!-- leftpanelinner -->
@@ -86,10 +86,11 @@
         </div>
 
         <div class="contentpanel">
-
+            <div class="container">
               {% block content %}
                 <p>Use this document as a way to quick start any new project.</p>
               {% endblock content %}
+            </div>
 
             <!-- content goes here... -->
         </div>
@@ -101,13 +102,10 @@
 </section>
 
 
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
 <!-- place project specific Javascript in this file -->
 
 <script src="{% static 'js/appbuddy.js' %}"></script>
-
-
 <script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
 <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
