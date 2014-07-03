@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.db import models
-from django_hstore import hstore
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
@@ -229,12 +228,11 @@ class AppBuddyUser(TimeStampedModel):
     model = models.CharField(max_length=50)
     app_version = models.CharField(max_length=50)
     os_version = models.CharField(max_length=50)
-    email_address = hstore.DictionaryField()
+    email_address = models.TextField()
     phone_number = models.CharField(max_length=50)
-    app_packages = hstore.DictionaryField()
+    app_packages = models.TextField()
     install_count = models.IntegerField(default=0)
 
-    objects = hstore.HStoreManager()
 
     class Meta:
         verbose_name = 'Appbuddy User'
