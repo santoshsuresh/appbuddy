@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.db import models
@@ -131,19 +132,23 @@ def do_on_agent_save(sender, instance, created, **kwargs):
               ['santosh.s@telibrahma.com', 'vinay.jayaram@telibrahma.com'], fail_silently=False)
 
 
-class AgentInfo(TimeStampedModel):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+class UserProfile(TimeStampedModel):
+    PROFILE_CHOICES = Choices(('promoter', 'App Buddy'), ('business', 'Business Partner'),
+                              ('location', 'Location Partner'))
+    user = models.OneToOneField(User)
     address = models.TextField()
     mobile_number = models.CharField(max_length=20, unique=True)
     city = models.ForeignKey(CityInfo, related_name='agents')
-    state = models.CharField(max_length=50, default='Karnataka')
-    pin_code = models.PositiveIntegerField()
-    active = models.BooleanField(default=False)
+    type = models.CharField(max_length=10, choices=PROFILE_CHOICES, default='promoter')
+
+
+class Agent(User):
+    agent_code = models.CharField(max_length=100)
+
+
+class AgentInfo(TimeStampedModel):
     agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(20000), MaxValueValidator(35000)],
                                            verbose_name='Agent Code')
-    photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
-    validated_on = models.DateTimeField(blank=True, null=True, default=None)
     mobile_os = models.CharField(max_length=20, default=None, blank=True, null=True, choices=MOBILE_CHOICES)
     make = models.CharField(max_length=50, default=None, blank=True, null=True)
     model = models.CharField(max_length=50, default=None, blank=True, null=True)
