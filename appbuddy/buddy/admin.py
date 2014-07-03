@@ -17,11 +17,6 @@ class PushNotificationRegistrationAdmin(BaseAdmin):
     pass
 
 
-
-
-
-
-
 class AppInfoAdmin(BaseAdmin):
     list_display = (
         'name', 'active', 'package_name', 'open_on_install', 'app_version', 'min_android_version', 'download_in_mb')
@@ -32,6 +27,7 @@ class AppInfoAdmin(BaseAdmin):
         if obj.download_size > 0:
             return "%.2f MB" % (obj.download_size / 1024.0 / 1024.0)
         return "0 MB"
+
     download_in_mb.short_description = 'Download Size (MB)'
 
 
@@ -42,7 +38,9 @@ class AgentInfoAdmin(BaseAdmin):
 
 
 class DeviceInfoAdmin(BaseAdmin):
-    list_display = ('box_identifier', 'device_type', 'city')
+    list_display = ('box_identifier', 'device_type', 'city', 'card_info', 'locations')
+    list_filter = ('device_type', 'card_info__card_type', 'city__name', 'locations__partner__name',
+                   'locations__partner__businessPartner__name')
     pass
 
 
@@ -71,3 +69,5 @@ admin.site.register(LocationInfo, LocationInfoAdmin)
 admin.site.register(CityInfo, BaseAdmin)
 admin.site.register(DeviceInfo, DeviceInfoAdmin)
 admin.site.register(WhitelistUrl, WhitelistUrlAdmin)
+admin.site.register(DataCardInfo, BaseAdmin)
+admin.site.register(BusinessPartner, BaseAdmin)

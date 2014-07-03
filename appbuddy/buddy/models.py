@@ -8,6 +8,9 @@ from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
 
 
+MOBILE_CHOICES = Choices(('android', 'Android'), ('iOS', 'iOS'), ('others', 'Others'))
+
+
 class CityInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
 
@@ -19,11 +22,23 @@ class CityInfo(TimeStampedModel):
         return self.name
 
 
+class DataCardInfo(TimeStampedModel):
+    CARD_CHOICES = Choices(('photon', 'Tata Photon'), ('airtel', 'Airtel'), ('mts', 'MTS'), ('reliance', 'Reliance'))
+    card_type = models.CharField(max_length=10, choices=CARD_CHOICES)
+    reference_number = models.CharField(max_length=30, unique=True)
+    mobile_number = models.CharField(max_length=30, default=None, blank=True, null=True)
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.card_type, self.reference_number)
+
+
 class DeviceInfo(TimeStampedModel):
     TYPE_CHOICES = Choices(('BuzzBox', 'Buzz Box'), ('tplink', 'TP Link 3020'))
-    box_identifier = models.IntegerField()
+    box_identifier = models.IntegerField(verbose_name='Hotspot ID (HID)', unique=True)
     device_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='tplink')
     city = models.ForeignKey(CityInfo, related_name='devices')
+    mac_address = models.CharField(max_length=20, verbose_name='Device Mac Address')
+    card_info = models.OneToOneField('DataCardInfo', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Appbuddy Device'
@@ -34,9 +49,8 @@ class DeviceInfo(TimeStampedModel):
 
 
 class PushNotificatonRegistration(TimeStampedModel):
-    TYPE_CHOICES = Choices(('android', 'Android'), ('iOS', 'iOS'))
     unique_id = models.CharField(max_length=100)
-    device_type = models.CharField(choices=TYPE_CHOICES, max_length=20, default='android')
+    device_type = models.CharField(choices=MOBILE_CHOICES, max_length=20, default='android')
     registration_id = models.CharField(max_length=255)
     app_version = models.CharField(max_length=10)
     os_version = models.CharField(max_length=10, default=None, blank=True, null=True)
@@ -88,7 +102,7 @@ class AppInfo(TimeStampedModel):
     thumbnail = models.ImageField(upload_to='thumbnails')
     categories = models.ManyToManyField(to=Category)
     min_android_version = models.CharField(max_length=10, default=14)
-    cities = models.ManyToManyField('CityInfo', related_name='apps',)
+    cities = models.ManyToManyField('CityInfo', related_name='apps', )
     whitelisted_urls = models.ManyToManyField('WhitelistUrl', related_name='apps')
     download_size = models.PositiveIntegerField(default=0, blank=True, null=True)
 
@@ -126,15 +140,31 @@ class AgentInfo(TimeStampedModel):
     state = models.CharField(max_length=50, default='Karnataka')
     pin_code = models.PositiveIntegerField()
     active = models.BooleanField(default=False)
-    agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(25000), MaxValueValidator(35000)],
+    agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(20000), MaxValueValidator(35000)],
                                            verbose_name='Agent Code')
     photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
     validated_on = models.DateTimeField(blank=True, null=True, default=None)
+    mobile_os = models.CharField(max_length=20, default=None, blank=True, null=True, choices=MOBILE_CHOICES)
+    make = models.CharField(max_length=50, default=None, blank=True, null=True)
+    model = models.CharField(max_length=50, default=None, blank=True, null=True)
+
 
     class Meta:
         verbose_name = 'Promoter'
         verbose_name_plural = 'Promoters'
 
+
+    def __unicode__(self):
+        return self.name
+
+
+class BusinessPartner(TimeStampedModel):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    address = models.TextField()
+    mobile_number = models.CharField(max_length=20, unique=True)
+    city = models.ForeignKey(CityInfo, related_name='business_partners')
+    description = models.TextField(default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -147,6 +177,7 @@ class LocationPartner(TimeStampedModel):
     mobile_number = models.CharField(max_length=20, unique=True)
     city = models.ForeignKey(CityInfo, related_name='partners')
     number_of_stores = models.PositiveIntegerField()
+    businessPartner = models.ForeignKey('BusinessPartner', related_name='location_partners')
 
     class Meta:
         verbose_name = 'Location Partner'
@@ -163,7 +194,7 @@ class LocationInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
     partner = models.ForeignKey(LocationPartner, related_name="stores")
     address = models.TextField()
-    footFall = models.PositiveIntegerField(default=0)
+    foot_fall = models.PositiveIntegerField(default=0)
     area = models.CharField(max_length=100, blank=True, null=True)
     city = models.ForeignKey(CityInfo, related_name='locations')
     landline_number = models.CharField(max_length=20, blank=True, null=True)
@@ -173,11 +204,12 @@ class LocationInfo(TimeStampedModel):
     preferred_time = models.CharField(max_length=20, choices=TIME_CHOICES, default='all')
     device_info = models.OneToOneField(DeviceInfo, related_name='locations', default=None, blank=True, null=True)
     agent = models.OneToOneField(AgentInfo, related_name='locations', default=None, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=12, default=None, decimal_places=8, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=12, default=None, decimal_places=8, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Location'
         verbose_name_plural = 'Locations'
-
 
     def __unicode__(self):
         return self.name
