@@ -1,4 +1,6 @@
+from annoying.functions import get_object_or_None
 from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.db import models
@@ -10,6 +12,56 @@ from .playapi.googleplay import GooglePlayAPI
 
 MOBILE_CHOICES = Choices(('android', 'Android'), ('iOS', 'iOS'), ('others', 'Others'))
 
+
+# # Profiles
+
+class UserProfile(TimeStampedModel):
+    user = models.OneToOneField(User)
+    address = models.TextField()
+    mobile_number = models.CharField(max_length=20, unique=True)
+    city = models.ForeignKey('CityInfo')
+    description = models.TextField(default=None, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class AgentInfo(UserProfile):
+    agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(20000), MaxValueValidator(35000)],
+                                           verbose_name='Agent Code')
+    mobile_os = models.CharField(max_length=20, default=None, blank=True, null=True, choices=MOBILE_CHOICES)
+    make = models.CharField(max_length=50, default=None, blank=True, null=True)
+    model = models.CharField(max_length=50, default=None, blank=True, null=True)
+    business_partner = models.ForeignKey('BusinessPartner', related_name='promoters')
+
+    class Meta:
+        verbose_name = 'Promoter'
+        verbose_name_plural = 'Promoters'
+
+    def __unicode__(self):
+        return "%s" % self.agent_id
+
+
+class BusinessPartner(UserProfile):
+    def __unicode__(self):
+        return self.user.username
+
+    def save(self, *args, **kwargs):
+        self.user.is_staff = True
+        group = get_object_or_None(Group, name='BusinessPartner')
+        if group:
+            self.user.groups.add(group)
+        self.user.save()
+        super(BusinessPartner, self).save(*args, **kwargs)
+
+
+class LocationPartner(UserProfile):
+    class Meta:
+        verbose_name = 'Location Partner'
+        verbose_name_plural = 'Location Partners'
+
+
+# # Profiles end
 
 class CityInfo(TimeStampedModel):
     name = models.CharField(max_length=100)
@@ -129,63 +181,6 @@ class AppInfo(TimeStampedModel):
 def do_on_agent_save(sender, instance, created, **kwargs):
     send_mail('Agent Created', 'Here is the message', 'appbuddy@telibrahma.com',
               ['santosh.s@telibrahma.com', 'vinay.jayaram@telibrahma.com'], fail_silently=False)
-
-
-class AgentInfo(TimeStampedModel):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    address = models.TextField()
-    mobile_number = models.CharField(max_length=20, unique=True)
-    city = models.ForeignKey(CityInfo, related_name='agents')
-    state = models.CharField(max_length=50, default='Karnataka')
-    pin_code = models.PositiveIntegerField()
-    active = models.BooleanField(default=False)
-    agent_id = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(20000), MaxValueValidator(35000)],
-                                           verbose_name='Agent Code')
-    photograph = models.ImageField(upload_to='agent_pictures', blank=True, null=True)
-    validated_on = models.DateTimeField(blank=True, null=True, default=None)
-    mobile_os = models.CharField(max_length=20, default=None, blank=True, null=True, choices=MOBILE_CHOICES)
-    make = models.CharField(max_length=50, default=None, blank=True, null=True)
-    model = models.CharField(max_length=50, default=None, blank=True, null=True)
-
-
-    class Meta:
-        verbose_name = 'Promoter'
-        verbose_name_plural = 'Promoters'
-
-
-    def __unicode__(self):
-        return self.name
-
-
-class BusinessPartner(TimeStampedModel):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    address = models.TextField()
-    mobile_number = models.CharField(max_length=20, unique=True)
-    city = models.ForeignKey(CityInfo, related_name='business_partners')
-    description = models.TextField(default=None, blank=True, null=True)
-
-    def __unicode__(self):
-        return self.name
-
-
-class LocationPartner(TimeStampedModel):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    address = models.TextField()
-    mobile_number = models.CharField(max_length=20, unique=True)
-    city = models.ForeignKey(CityInfo, related_name='partners')
-    number_of_stores = models.PositiveIntegerField()
-    businessPartner = models.ForeignKey('BusinessPartner', related_name='location_partners')
-
-    class Meta:
-        verbose_name = 'Location Partner'
-        verbose_name_plural = 'Location Partners'
-
-
-    def __unicode__(self):
-        return self.name
 
 
 class LocationInfo(TimeStampedModel):

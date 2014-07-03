@@ -279,3 +279,5 @@ APPLICATION_DOWNLOAD_ROOT = normpath(join(MEDIA_ROOT, 'apk'))
 
 #Grappelli
 GRAPPELLI_ADMIN_TITLE='Telibrahma AppBuddy'
+
+AUTH_PROFILE_MODULE = 'buddy.UserProfile'

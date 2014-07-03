@@ -32,15 +32,26 @@ class AppInfoAdmin(BaseAdmin):
 
 
 class AgentInfoAdmin(BaseAdmin):
-    list_display = ('name', 'email', 'agent_id', 'mobile_number', 'city', 'active', 'locations')
-    list_filter = ('active', 'city__name', 'locations__partner__name')
+    # list_display = ('first_name', 'email', 'agent_id', 'mobile_number', 'city', 'active', 'locations')
+    # list_filter = ('active', 'city__name', 'locations__partner__name')
+    list_display = ('business_partner', 'user')
+
+    exclude = ('business_partner', )
+
+    def save_model(self, request, obj, form, change):
+        user = request.user
+        profile = get_object_or_None(BusinessPartner, user__id=user.id)
+        obj.business_partner = profile
+        print profile
+        obj.save()
+
     pass
 
 
 class DeviceInfoAdmin(BaseAdmin):
-    list_display = ('box_identifier', 'device_type', 'city', 'card_info', 'locations')
-    list_filter = ('device_type', 'card_info__card_type', 'city__name', 'locations__partner__name',
-                   'locations__partner__businessPartner__name')
+    # list_display = ('box_identifier', 'device_type', 'city', 'card_info', 'locations')
+    # list_filter = ('device_type', 'card_info__card_type', 'city__name', 'locations__partner__name',
+    #                'locations__partner__businessPartner__name')
     pass
 
 
@@ -51,7 +62,7 @@ class LocationPartnerAdmin(BaseAdmin):
 
 class LocationInfoAdmin(BaseAdmin):
     list_display = ('name', 'partner', 'city', 'agent')
-    list_filter = ('city__name', 'device_info__device_type', 'partner__name' )
+    # list_filter = ('city__name', 'device_info__device_type', 'partner__name' )
 
 
 class WhitelistUrlAdmin(BaseAdmin):
@@ -64,7 +75,7 @@ admin.site.register(AppInfo, AppInfoAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(AgentInfo, AgentInfoAdmin)
 admin.site.register(AppBuddyUser, BaseAdmin)
-admin.site.register(LocationPartner, LocationPartnerAdmin)
+admin.site.register(LocationPartner, BaseAdmin)
 admin.site.register(LocationInfo, LocationInfoAdmin)
 admin.site.register(CityInfo, BaseAdmin)
 admin.site.register(DeviceInfo, DeviceInfoAdmin)
