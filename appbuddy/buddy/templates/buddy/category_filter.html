@@ -1,0 +1,41 @@
+{% extends 'bracket.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+    <i class="fa fa-th-list"></i> Categories
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <a class="btn btn-primary pull-right" href="{% url 'categories-create' %}">Add Category</a>
+            </div>
+            <p></p>
+
+            <form class="form form-inline" action="" method="get">
+                {% crispy filter.form %}
+            </form>
+
+            {% if categories %}
+                <p></p>
+                <div class="table-responsive">
+                    <table class="table table-hover mb30">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td><a href="/appbuddy/categories/edit/{{ category.pk }}">{{ category.name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            {% else %}
+                <h3>No Category Found!! Start by <a href="{% url 'categories-create' %}">adding</a> one</h3>
+            {% endif %}
+    </div>
+{% endblock %}

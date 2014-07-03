@@ -16,7 +16,12 @@ router.register('urls', WhitelistUrlViewSet)
 
 urlpatterns = patterns('',
     url(r'^api/v1/', include(router.urls)),
+
     url(r'^devices/$', DeviceInfoListView.as_view(),name='devices-list'),
     url(r'^devices/add/$', DeviceInfoCreateView.as_view(), name='devices-create'),
     url(r'^devices/edit/(?P<pk>\d+)$', DeviceInfoUpdateView.as_view(), name='devices-edit'),
+
+    url(r'^categories/$', CategoryListView.as_view(),name='categories-list'),
+    url(r'^categories/add/$', CategoryCreateView.as_view(),name='categories-create'),
+    url(r'^categories/edit/(?P<pk>\d+)$', CategoryUpdateView.as_view(),name='categories-edit'),
 )

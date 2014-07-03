@@ -9,9 +9,9 @@ from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .filters import DeviceInfoFilter
-from .forms import DeviceInfoForm
-from .models import AppBuddyUser, DeviceInfo
+from .filters import DeviceInfoFilter, CategoryFilter
+from .forms import DeviceInfoForm, CategoryForm
+from .models import AppBuddyUser, DeviceInfo, Category
 from .serializers import AppBuddySerializer
 
 
@@ -35,6 +35,29 @@ class DeviceInfoUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('devices-list')
+
+
+class CategoryListView(LoginRequiredMixin, FilterView):
+    model = Category
+    filterset_class = CategoryFilter
+    context_object_name = 'categories'
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+
+    def get_success_url(self):
+        return reverse('categories-list')
+
+
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    form_class = CategoryForm
+
+    def get_success_url(self):
+        return reverse('categories-list')
+
 
 
 
