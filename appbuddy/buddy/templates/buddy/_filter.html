@@ -1,13 +1,13 @@
 {% extends 'bracket.html' %}
 {% load crispy_forms_tags %}
 {% block page_title %}
-    <i class="fa fa-desktop"></i> Hotspots
+    <i class="fa fa-desktop"></i> {{ title }}
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="row">
-                <a class="btn btn-primary pull-right" href="/appbuddy/devices/add/">Add HotSpot</a>
+                <a class="btn btn-primary pull-right" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
             </div>
             <p></p>
 
@@ -15,36 +15,27 @@
                 {% crispy filter.form %}
             </form>
 
-            {% if devices %}
+            {% if object_list %}
                 <p></p>
                 <div class="table-responsive">
-                    <table class="table table-hover mb30">
+                    <table class="table table-hover mb30 table-striped">
                         <thead>
                         <tr>
-                            <th>Device Identifier</th>
-                            <th>Device Type</th>
-                            <th>City</th>
-                            <th>Mac Address</th>
-                            <th>Data Card Ref Num</th>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
                         </tr>
                         </thead>
                         <tbody>
-                        {% for device in devices %}
-                            <tr>
-                                <td><a href="/appbuddy/devices/edit/{{ device.pk }}">{{ device.box_identifier }}</a>
-                                </td>
-                                <td>{{ device.get_device_type_display }}</td>
-                                <td>{{ device.city.name }}</td>
-                                <td>{{ device.mac_address }}</td>
-                                <td>{{ device.card_info.reference_number }}</td>
-                            </tr>
+                        {% for obj in object_list %}
+                            {% block table_content %}{% endblock %}
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 </div>
             {% else %}
-                <h3>No Devices Found!! Start by <a href="/appbuddy/devices/add/">adding</a> one</h3>
+                <h3>No Devices Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one</h3>
             {% endif %}
     </div>
 {% endblock %}

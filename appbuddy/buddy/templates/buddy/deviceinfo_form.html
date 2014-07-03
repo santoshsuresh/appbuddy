@@ -1,13 +1,4 @@
-{% extends 'bracket.html' %}
-{% load crispy_forms_tags %}
-{% block page_title %}
-    <i class="fa fa-desktop"></i> Add Hotspot
-{% endblock %}
-{% block content %}
-    <div class="row">
-        <div class="col-md-6 col-md-offset-1">
-            {% csrf_token %}
-            {% crispy form %}
-        </div>
-    </div>
-{% endblock %}
+{% extends 'buddy/_form.html' %}
+
+{% block title %}Hotspot{% endblock %}
+{% block icon_class %}fa-desktop{% endblock %}

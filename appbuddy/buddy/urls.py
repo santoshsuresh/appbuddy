@@ -29,4 +29,10 @@ urlpatterns = patterns('',
     url(r'^cities/add/$', CityInfoCreateView.as_view(),name='cities-create'),
     url(r'^cities/edit/(?P<pk>\d+)$', CityInfoUpdateView.as_view(),name='cities-edit'),
 
+    url(r'^cards/$', DataCardInfoListView.as_view(),name='cards-list'),
+    url(r'^cards/add/$', DataCardInfoCreateView.as_view(),name='cards-create'),
+    url(r'^cards/edit/(?P<pk>\d+)$', DataCardInfoUpdateView.as_view(),name='cards-edit'),
+
+
+
 )

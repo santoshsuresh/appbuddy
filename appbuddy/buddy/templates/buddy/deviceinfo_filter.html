@@ -1,50 +1,14 @@
-{% extends 'bracket.html' %}
-{% load crispy_forms_tags %}
-{% block page_title %}
-    <i class="fa fa-desktop"></i> Hotspots
-{% endblock %}
-{% block content %}
-    <div class="row">
-        <div class="col-md-9">
-            <div class="row">
-                <a class="btn btn-primary pull-right" href="/appbuddy/devices/add/">Add HotSpot</a>
-            </div>
-            <p></p>
+{% extends 'buddy/_filter.html' %}
 
-            <form class="form form-inline" action="" method="get">
-                {% crispy filter.form %}
-            </form>
-
-            {% if devices %}
-                <p></p>
-                <div class="table-responsive">
-                    <table class="table table-hover mb30">
-                        <thead>
-                        <tr>
-                            <th>Device Identifier</th>
-                            <th>Device Type</th>
-                            <th>City</th>
-                            <th>Mac Address</th>
-                            <th>Data Card Ref Num</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for device in devices %}
-                            <tr>
-                                <td><a href="/appbuddy/devices/edit/{{ device.pk }}">{{ device.box_identifier }}</a>
-                                </td>
-                                <td>{{ device.get_device_type_display }}</td>
-                                <td>{{ device.city.name }}</td>
-                                <td>{{ device.mac_address }}</td>
-                                <td>{{ device.card_info.reference_number }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                </div>
-            {% else %}
-                <h3>No Devices Found!! Start by <a href="/appbuddy/devices/add/">adding</a> one</h3>
-            {% endif %}
-    </div>
+{% block table_content %}
+    <tr>
+        <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.box_identifier }}</a>
+        </td>
+        <td>{{ obj.get_device_type_display }}</td>
+        <td>{{ obj.city.name }}</td>
+        <td>{{ obj.mac_address }}</td>
+        <td>{{ obj.card_info.reference_number }}</td>
+        <td>{{ obj.card_info.locations }}</td>
+    </tr>
 {% endblock %}
+

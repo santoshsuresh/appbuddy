@@ -9,16 +9,35 @@ from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter
-from .forms import DeviceInfoForm, CategoryForm, CityInfoForm
-from .models import AppBuddyUser, DeviceInfo, Category, CityInfo
+from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter
+from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm
+from .models import *
 from .serializers import AppBuddySerializer
 
 
-class DeviceInfoListView(LoginRequiredMixin, FilterView):
+class BaseFilterView(LoginRequiredMixin, FilterView):
+    header_names = []
+    title = ''
+    title_singular = ''
+    type_name = ''
+
+    def get_context_data(self, **kwargs):
+        context = super(BaseFilterView, self).get_context_data(**kwargs)
+        context['type_name'] = self.type_name
+        context['title'] = self.title
+        context['title_singular'] = self.title_singular
+        context['headers'] = self.header_names
+        return context
+
+
+class DeviceInfoListView(BaseFilterView):
     model = DeviceInfo
     filterset_class = DeviceInfoFilter
-    context_object_name = 'devices'
+    header_names = ['Device Identifier', 'Device Type', 'City', 'Mac Address', 'Data Card Ref Num',
+                    'Location']
+    title = 'Hotspots'
+    title_singular = 'Hotspot'
+    type_name = 'devices'
 
 
 class DeviceInfoCreateView(LoginRequiredMixin, CreateView):
@@ -37,10 +56,13 @@ class DeviceInfoUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('devices-list')
 
 
-class CategoryListView(LoginRequiredMixin, FilterView):
+class CategoryListView(BaseFilterView):
     model = Category
     filterset_class = CategoryFilter
-    context_object_name = 'categories'
+    header_names = ['Name']
+    title_singular = 'Categories'
+    title = 'Category'
+    type_name = 'categories'
 
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):
@@ -59,10 +81,14 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('categories-list')
 
 
-class CityInfoListView(LoginRequiredMixin, FilterView):
+class CityInfoListView(BaseFilterView):
     model = CityInfo
     filterset_class = CityInfoFilter
-    context_object_name = 'cities'
+    header_names = ['Name']
+    title_singular = 'City'
+    title = 'Cities'
+    type_name = 'cities'
+
 
 class CityInfoCreateView(LoginRequiredMixin, CreateView):
     model = CityInfo
@@ -80,11 +106,29 @@ class CityInfoUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('cities-list')
 
 
+class DataCardInfoListView(BaseFilterView):
+    model = DataCardInfo
+    filterset_class = DataCardFilter
+    header_names = ['Reference Number','Card Type', 'Mobile Number']
+    title_singular = 'Data Card'
+    title = 'Data Cards'
+    type_name = 'cards'
 
 
+class DataCardInfoCreateView(LoginRequiredMixin, CreateView):
+    model = DataCardInfo
+    form_class = DataCardInfoForm
+
+    def get_success_url(self):
+        return reverse('cards-list')
 
 
+class DataCardInfoUpdateView(LoginRequiredMixin, UpdateView):
+    model = DataCardInfo
+    form_class = DataCardInfoForm
 
+    def get_success_url(self):
+        return reverse('cards-list')
 
 
 class AppBuddyUserList(APIView):

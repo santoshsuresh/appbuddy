@@ -2,7 +2,7 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button, ButtonHolder, HTML
 from django.forms import ModelForm
-from .models import DeviceInfo, Category, CityInfo
+from .models import DeviceInfo, Category, CityInfo, DataCardInfo
 
 
 class DeviceInfoForm(ModelForm):
@@ -66,10 +66,33 @@ class CityInfoForm(ModelForm):
             'name',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'categories-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="{% url \'cities-list\' %}" class="btn"/>Cancel</a>'),
                 css_class='center-block form-center'
             )
         )
 
     class Meta:
         model = CityInfo
+
+class DataCardInfoForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(DataCardInfoForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-7'
+        self.helper.layout = Layout(
+            'card_type',
+            'reference_number',
+            'mobile_number',
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'cards-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = DataCardInfo
+
