@@ -1,0 +1,41 @@
+{% extends 'bracket.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+    <i class="fa fa-university"></i> Cities
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <a class="btn btn-primary pull-right" href="{% url 'cities-create' %}">Add City</a>
+            </div>
+            <p></p>
+
+            <form class="form form-inline" action="" method="get">
+                {% crispy filter.form %}
+            </form>
+
+            {% if cities %}
+                <p></p>
+                <div class="table-responsive">
+                    <table class="table table-hover mb30">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for city in cities %}
+                            <tr>
+                                <td><a href="/appbuddy/categories/edit/{{ city.pk }}">{{ city.name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            {% else %}
+                <h3>No City Found!! Start by <a href="{% url 'cities-create' %}">adding</a> one</h3>
+            {% endif %}
+    </div>
+{% endblock %}

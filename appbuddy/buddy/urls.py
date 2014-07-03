@@ -24,4 +24,9 @@ urlpatterns = patterns('',
     url(r'^categories/$', CategoryListView.as_view(),name='categories-list'),
     url(r'^categories/add/$', CategoryCreateView.as_view(),name='categories-create'),
     url(r'^categories/edit/(?P<pk>\d+)$', CategoryUpdateView.as_view(),name='categories-edit'),
+
+    url(r'^cities/$', CityInfoListView.as_view(),name='cities-list'),
+    url(r'^cities/add/$', CityInfoCreateView.as_view(),name='cities-create'),
+    url(r'^cities/edit/(?P<pk>\d+)$', CityInfoUpdateView.as_view(),name='cities-edit'),
+
 )

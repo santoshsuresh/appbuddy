@@ -9,9 +9,9 @@ from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .filters import DeviceInfoFilter, CategoryFilter
-from .forms import DeviceInfoForm, CategoryForm
-from .models import AppBuddyUser, DeviceInfo, Category
+from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter
+from .forms import DeviceInfoForm, CategoryForm, CityInfoForm
+from .models import AppBuddyUser, DeviceInfo, Category, CityInfo
 from .serializers import AppBuddySerializer
 
 
@@ -57,6 +57,31 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('categories-list')
+
+
+class CityInfoListView(LoginRequiredMixin, FilterView):
+    model = CityInfo
+    filterset_class = CityInfoFilter
+    context_object_name = 'cities'
+
+class CityInfoCreateView(LoginRequiredMixin, CreateView):
+    model = CityInfo
+    form_class = CityInfoForm
+
+    def get_success_url(self):
+        return reverse('cities-list')
+
+
+class CityInfoUpdateView(LoginRequiredMixin, UpdateView):
+    model = CityInfo
+    form_class = CityInfoForm
+
+    def get_success_url(self):
+        return reverse('cities-list')
+
+
+
+
 
 
 
