@@ -279,3 +279,5 @@ APPLICATION_DOWNLOAD_ROOT = normpath(join(MEDIA_ROOT, 'apk'))
 GRAPPELLI_ADMIN_TITLE = 'Telibrahma AppBuddy'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+AUTH_USER_MODEL = 'buddy.BaseUser'
