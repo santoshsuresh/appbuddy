@@ -4,10 +4,7 @@
     <i class="fa {% block icon_class %}{% endblock %}"></i> Add {% block title %}Title{% endblock %}
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-6 col-md-offset-1">
-            {% csrf_token %}
-            {% crispy form %}
-        </div>
+    <div class="col-md-6 col-md-offset-1">
+        {% crispy form %}
     </div>
 {% endblock %}

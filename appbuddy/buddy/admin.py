@@ -5,7 +5,7 @@ from .models import *
 
 
 class BaseAdmin(admin.ModelAdmin):
-    date_hierarchy = 'created'
+    # date_hierarchy = 'created'
     pass
 
 
@@ -32,26 +32,19 @@ class AppInfoAdmin(BaseAdmin):
 
 
 class AgentInfoAdmin(BaseAdmin):
-    list_display = ('name', 'email', 'agent_id', 'mobile_number', 'city', 'active', 'locations')
-    list_filter = ('active', 'city__name', 'locations__partner__name')
     pass
 
 
 class DeviceInfoAdmin(BaseAdmin):
-    list_display = ('box_identifier', 'device_type', 'city', 'card_info', 'locations')
-    list_filter = ('device_type', 'card_info__card_type', 'city__name', 'locations__partner__name',
-                   'locations__partner__businessPartner__name')
     pass
 
 
 class LocationPartnerAdmin(BaseAdmin):
-    list_display = ('name', 'email', 'mobile_number', 'city')
     pass
 
 
 class LocationInfoAdmin(BaseAdmin):
-    list_display = ('name', 'partner', 'city', 'agent')
-    list_filter = ('city__name', 'device_info__device_type', 'partner__name' )
+    pass
 
 
 class WhitelistUrlAdmin(BaseAdmin):

@@ -1,7 +1,7 @@
 {% extends 'bracket.html' %}
 {% load crispy_forms_tags %}
 {% block page_title %}
-    <i class="fa fa-desktop"></i> {{ title }}
+     {{ title }}
 {% endblock %}
 {% block content %}
     <div class="row">
@@ -35,7 +35,7 @@
                 </div>
                 </div>
             {% else %}
-                <h3>No Devices Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one</h3>
+                <h3>No {{ title }} Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one</h3>
             {% endif %}
     </div>
 {% endblock %}
