@@ -1,21 +1,18 @@
-from braces.views import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView
 from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter
-from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm
+from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter
+from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm
 from .models import *
 from .serializers import AppBuddySerializer
 
 
-class BaseFilterView(LoginRequiredMixin, FilterView):
+class BaseFilterView(FilterView):
     header_names = []
     title = ''
     title_singular = ''
@@ -40,7 +37,7 @@ class DeviceInfoListView(BaseFilterView):
     type_name = 'devices'
 
 
-class DeviceInfoCreateView(LoginRequiredMixin, CreateView):
+class DeviceInfoCreateView(CreateView):
     model = DeviceInfo
     form_class = DeviceInfoForm
 
@@ -48,7 +45,7 @@ class DeviceInfoCreateView(LoginRequiredMixin, CreateView):
         return reverse('devices-list')
 
 
-class DeviceInfoUpdateView(LoginRequiredMixin, UpdateView):
+class DeviceInfoUpdateView(UpdateView):
     model = DeviceInfo
     form_class = DeviceInfoForm
 
@@ -65,7 +62,7 @@ class CategoryListView(BaseFilterView):
     type_name = 'categories'
 
 
-class CategoryCreateView(LoginRequiredMixin, CreateView):
+class CategoryCreateView(CreateView):
     model = Category
     form_class = CategoryForm
 
@@ -73,7 +70,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
         return reverse('categories-list')
 
 
-class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+class CategoryUpdateView(UpdateView):
     model = Category
     form_class = CategoryForm
 
@@ -90,7 +87,7 @@ class CityInfoListView(BaseFilterView):
     type_name = 'cities'
 
 
-class CityInfoCreateView(LoginRequiredMixin, CreateView):
+class CityInfoCreateView(CreateView):
     model = CityInfo
     form_class = CityInfoForm
 
@@ -98,7 +95,7 @@ class CityInfoCreateView(LoginRequiredMixin, CreateView):
         return reverse('cities-list')
 
 
-class CityInfoUpdateView(LoginRequiredMixin, UpdateView):
+class CityInfoUpdateView(UpdateView):
     model = CityInfo
     form_class = CityInfoForm
 
@@ -109,13 +106,13 @@ class CityInfoUpdateView(LoginRequiredMixin, UpdateView):
 class DataCardInfoListView(BaseFilterView):
     model = DataCardInfo
     filterset_class = DataCardFilter
-    header_names = ['Reference Number','Card Type', 'Mobile Number']
+    header_names = ['Reference Number', 'Card Type', 'Mobile Number']
     title_singular = 'Data Card'
     title = 'Data Cards'
     type_name = 'cards'
 
 
-class DataCardInfoCreateView(LoginRequiredMixin, CreateView):
+class DataCardInfoCreateView(CreateView):
     model = DataCardInfo
     form_class = DataCardInfoForm
 
@@ -123,12 +120,37 @@ class DataCardInfoCreateView(LoginRequiredMixin, CreateView):
         return reverse('cards-list')
 
 
-class DataCardInfoUpdateView(LoginRequiredMixin, UpdateView):
+class DataCardInfoUpdateView(UpdateView):
     model = DataCardInfo
     form_class = DataCardInfoForm
 
     def get_success_url(self):
         return reverse('cards-list')
+
+
+class BusinessPartnerListView(BaseFilterView):
+    header_names = ['Email Address', 'first_name', 'last_name', 'mobile_number', 'city']
+    filterset_class = BusinessPartnerFilter
+    title = 'Business Partners'
+    title_singular = 'Business Partner'
+    type_name = 'businesspartners'
+    model = BusinessPartner
+
+
+class BusinessPartnerCreateView(CreateView):
+    model = BusinessPartner
+    form_class = BusinessPartnerCreationForm
+
+    def get_success_url(self):
+        return reverse('businesspartners-list')
+
+
+class BusinessPartnerUpdateView(UpdateView):
+    model = BusinessPartner
+    form_class = BusinessPartnerCreationForm
+
+    def get_success_url(self):
+        return reverse('businesspartners-list')
 
 
 class AppBuddyUserList(APIView):

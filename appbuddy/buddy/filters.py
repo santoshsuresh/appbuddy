@@ -2,7 +2,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 from django import template
 from django_filters import FilterSet, CharFilter
-from .models import DeviceInfo, Category, CityInfo, DataCardInfo
+from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BusinessPartner
+
 
 class DeviceInfoFilter(FilterSet):
     class Meta:
@@ -18,7 +19,6 @@ class DeviceInfoFilter(FilterSet):
         helper.layout = Layout(
             'box_identifier',
             'city',
-            'device_type',
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
         self.form.helper = helper
@@ -79,6 +79,27 @@ class DataCardFilter(FilterSet):
         helper.layout = Layout(
             'card_type',
             'reference_number',
+            Submit('submit', 'Filter', css_class='btn-primary'),
+        )
+        self.form.helper = helper
+
+class BusinessPartnerFilter(FilterSet):
+    email = CharFilter(lookup_type='icontains')
+    mobile_number = CharFilter(lookup_type='icontains')
+
+    class Meta:
+        model = BusinessPartner
+        fields = ['email', 'mobile_number', 'city']
+
+    def __init__(self, *args, **kwargs):
+        super(BusinessPartnerFilter, self).__init__(*args, **kwargs)
+        helper = FormHelper()
+        helper.form_class = 'form-inline'
+        helper.field_template = 'bootstrap3/layout/inline_field.html'
+        helper.layout = Layout(
+            'email',
+            'mobile_number',
+            'city',
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
         self.form.helper = helper

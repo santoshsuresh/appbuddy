@@ -36,7 +36,7 @@ urlpatterns = patterns('',
 
     url(r'^businesspartners/$', BusinessPartnerListView.as_view(),name='businesspartners-list'),
     url(r'^businesspartners/add/$', BusinessPartnerCreateView.as_view(),name='businesspartners-create'),
-    url(r'^cards/edit/(?P<pk>\d+)$', DataCardInfoUpdateView.as_view(),name='businesspartners-edit'),
+    url(r'^businesspartners/edit/(?P<pk>\d+)$', BusinessPartnerUpdateView.as_view(),name='businesspartners-edit'),
 
 
 

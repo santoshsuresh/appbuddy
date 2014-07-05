@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, UserManager
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.db import models
+from django.utils import timezone
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
@@ -130,11 +131,47 @@ def do_on_agent_save(sender, instance, created, **kwargs):
               ['santosh.s@telibrahma.com', 'vinay.jayaram@telibrahma.com'], fail_silently=False)
 
 
-class BaseUser(AbstractUser):
+class AppBuddyUserManager(UserManager):
+    def _my_create_user(self, email, password, first_name, last_name, is_superuser, **extra_fields):
+        now = timezone.now()
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        city = CityInfo.objects.get(pk=1)
+        user = self.model(email=email, first_name=first_name, last_name=last_name,
+                          is_superuser=is_superuser, city=city, last_login=now,  **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+    def create_user(self, email, password, first_name, last_name, **extra_fields):
+        return self._my_create_user(email, password, first_name, last_name, False, **extra_fields)
+
+    def create_superuser(self, email, password, first_name, last_name, **extra_fields):
+        return self._my_create_user(email, password, first_name, last_name, True, **extra_fields)
+
+
+class BaseUser(AbstractBaseUser):
+    email = models.EmailField(unique=True, )
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     mobile_number = models.CharField(max_length=20, unique=True)
     address = models.TextField()
-    city = models.ForeignKey(CityInfo)
+    city = models.ForeignKey(CityInfo, default=None)
     description = models.TextField(default=None, blank=True, null=True)
+    is_superuser = models.BooleanField('staff status', default=False,
+                                   help_text='Designates whether the user can log into this admin '
+                                             'site.')
+    is_active = models.BooleanField('active', default=True,
+                                    help_text='Designates whether this user should be treated as '
+                                              'active. Unselect this instead of deleting accounts.')
+    date_joined = models.DateTimeField('date joined', default=timezone.now)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
+
+    objects = AppBuddyUserManager()
 
     def __unicode__(self):
         return self.first_name
@@ -156,6 +193,10 @@ class AgentInfo(BaseUser):
 
 
 class BusinessPartner(BaseUser):
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
+
     def __unicode__(self):
         return self.first_name
 
