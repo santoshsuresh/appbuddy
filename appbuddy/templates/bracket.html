@@ -14,7 +14,7 @@
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body>
+<body style="overflow:visible">
 <section>
 
     <div class="leftpanel">
@@ -49,6 +49,7 @@
                 <li><a href="{% url 'devices-list'  %}"><i class="fa fa-desktop"></i> <span>Hotspots</span></a></li>
                 <li><a href="{% url 'categories-list'  %}"><i class="fa fa-th-list"></i> <span>Categories</span></a></li>
                 <li><a href="{% url 'cards-list'  %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
+                <li><a href="{% url 'businesspartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Business Partners</span></a></li>
                 <li><a href="/"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>
 
             </ul>
@@ -89,11 +90,9 @@
         </div>
 
         <div class="contentpanel">
-            <div class="container">
               {% block content %}
                 <p>Use this document as a way to quick start any new project.</p>
               {% endblock content %}
-            </div>
 
             <!-- content goes here... -->
         </div>
