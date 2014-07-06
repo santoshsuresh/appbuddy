@@ -157,7 +157,10 @@ class BusinessPartnerUpdateView(UpdateView):
         return reverse('businesspartners-list')
 
     def get_initial(self):
-        return {'type': 'location_partner'}
+        return {'type': 'business_partner'}
+
+
+
 
 
 class AppBuddyUserList(APIView):
