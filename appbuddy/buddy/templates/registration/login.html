@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+    <title>Appbuddy Signin</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.default.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body style="overflow:visible" class="signin">
+<section>
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-md-5 col-md-offset-3">
+                <form action="{{ app_path }}" method="post" id="login-form">
+                    {% csrf_token %}
+                    <h4 class="nomargin">Sign In</h4>
+                    <p class="mt5 mb20">Login to access your account</p>
+                    <input class="form-control uname" type="text" name='username' placeholder="Email Address"/>
+                    <input type="password" class="form-control pword" name='password' placeholder="Password"/>
+                    <input type="hidden" name="this_is_the_login_form" value="1" />
+                    <a href="#">
+                        <small>Forgot your password?</small>
+                    </a>
+                    {% if form.errors %}<p><em>There was an error logging you in. Please check your email and password</em></p>{% endif %}
+                    <input type="submit" class="btn btn-success btn-block" value="Sign In">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- place project specific Javascript in this file -->
+
+<script src="{% static 'js/appbuddy.js' %}"></script>
+<script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
+<script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/modernizr.min.js' %}"></script>
+<script src="{% static 'js/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'js/toggles.min.js' %}"></script>
+<script src="{% static 'js/retina.min.js' %}"></script>
+<script src="{% static 'js/jquery.cookies.js' %}"></script>
+
+<script src="{% static 'js/custom.js' %}"></script>
+{% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

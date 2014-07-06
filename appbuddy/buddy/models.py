@@ -169,7 +169,7 @@ class BaseUser(AbstractBaseUser):
                                              'site.')
     is_active = models.BooleanField('active', default=True,
                                     help_text='Designates whether this user should be treated as '
-                                              'active. Unselect this instead of deleting accounts.')
+                                              'active. Unselect this instead of deleting registration.')
     date_joined = models.DateTimeField('date joined', default=timezone.now)
     type = models.TextField(max_length=10, choices=CHOICES,default='agent', blank=True,null=True)
 

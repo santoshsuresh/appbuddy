@@ -164,6 +164,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'buddy.middleware.UserTypeMiddleware'
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -283,3 +284,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 AUTH_USER_MODEL = 'buddy.BaseUser'
 
 CRISPY_FAIL_SILENTLY = False
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/'

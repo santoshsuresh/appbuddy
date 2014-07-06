@@ -1,7 +1,10 @@
+from braces.views import LoginRequiredMixin
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 
 # Create your views here.
-from django.views.generic import CreateView, UpdateView
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, TemplateView
 from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
@@ -13,7 +16,13 @@ from .models import *
 from .serializers import AppBuddySerializer
 
 
-class BaseFilterView(FilterView):
+class SuperuserRequiredMixin(object):
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, *args, **kwargs):
+        return super(SuperuserRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class BaseFilterView(SuperuserRequiredMixin, FilterView):
     header_names = []
     title = ''
     title_singular = ''
@@ -26,6 +35,10 @@ class BaseFilterView(FilterView):
         context['title_singular'] = self.title_singular
         context['headers'] = self.header_names
         return context
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'bracket.html'
 
 
 class DeviceInfoListView(BaseFilterView):
@@ -158,9 +171,6 @@ class BusinessPartnerUpdateView(UpdateView):
 
     def get_initial(self):
         return {'type': 'business_partner'}
-
-
-
 
 
 class AppBuddyUserList(APIView):

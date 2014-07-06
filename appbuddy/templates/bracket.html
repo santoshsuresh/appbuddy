@@ -45,11 +45,13 @@
 
             <h5 class="sidebartitle">Navigation</h5>
             <ul class="nav nav-pills nav-stacked nav-bracket">
-                <li><a href="{% url 'cities-list'  %}"><i class="fa fa-university"></i> <span>Cities</span></a></li>
-                <li><a href="{% url 'devices-list'  %}"><i class="fa fa-desktop"></i> <span>Hotspots</span></a></li>
-                <li><a href="{% url 'categories-list'  %}"><i class="fa fa-th-list"></i> <span>Categories</span></a></li>
-                <li><a href="{% url 'cards-list'  %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
-                <li><a href="{% url 'businesspartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Business Partners</span></a></li>
+                {% if request.user.is_superuser %}
+                    <li><a href="{% url 'cities-list'  %}"><i class="fa fa-university"></i> <span>Cities</span></a></li>
+                    <li><a href="{% url 'devices-list'  %}"><i class="fa fa-desktop"></i> <span>Hotspots</span></a></li>
+                    <li><a href="{% url 'categories-list'  %}"><i class="fa fa-th-list"></i> <span>Categories</span></a></li>
+                    <li><a href="{% url 'cards-list'  %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
+                    <li><a href="{% url 'businesspartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Business Partners</span></a></li>
+                {% endif %}
                 <li><a href="/"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>
 
             </ul>
@@ -70,11 +72,11 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <img src="{% static 'images/photos/loggeduser.png' %}" alt=""/>
-                                Santosh Suresh
+                                {{ request.user.first_name }} {{ request.user.last_name }}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                                <li><a href="signin.html"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+                                <li><a href="{%  url 'logout' %}"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
                             </ul>
                         </div>
                     </li>
@@ -86,12 +88,12 @@
         <!-- headerbar -->
 
         <div class="pageheader">
-            <h2>{% block page_title %}<i class="fa fa-home"></i> Example Base Template{% endblock page_title %}</h2>
+            <h2>{% block page_title %}<i class="fa fa-home"></i> Welcome{% endblock page_title %}</h2>
         </div>
 
         <div class="contentpanel">
               {% block content %}
-                <p>Use this document as a way to quick start any new project.</p>
+                <p>This will be the dashboard</p>
               {% endblock content %}
 
             <!-- content goes here... -->
