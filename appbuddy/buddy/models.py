@@ -139,7 +139,7 @@ class AppBuddyUserManager(UserManager):
         email = self.normalize_email(email)
         city = CityInfo.objects.get(pk=1)
         user = self.model(email=email, first_name=first_name, last_name=last_name,
-                          is_superuser=is_superuser, city=city, last_login=now,  **extra_fields)
+                          is_superuser=is_superuser, city=city, last_login=now, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -153,6 +153,7 @@ class AppBuddyUserManager(UserManager):
 
 
 class BaseUser(AbstractBaseUser):
+    CHOICES = Choices(('agent','Agent'),('business_partner','Business Partner'),('location_partner','Location Partner'))
     email = models.EmailField(unique=True, )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -161,12 +162,16 @@ class BaseUser(AbstractBaseUser):
     city = models.ForeignKey(CityInfo, default=None)
     description = models.TextField(default=None, blank=True, null=True)
     is_superuser = models.BooleanField('staff status', default=False,
+                                       help_text='Designates whether the user can log into this admin '
+                                                 'site.')
+    is_staff = models.BooleanField('staff status', default=False,
                                    help_text='Designates whether the user can log into this admin '
                                              'site.')
     is_active = models.BooleanField('active', default=True,
                                     help_text='Designates whether this user should be treated as '
                                               'active. Unselect this instead of deleting accounts.')
     date_joined = models.DateTimeField('date joined', default=timezone.now)
+    type = models.TextField(max_length=10, choices=CHOICES,default='agent', blank=True,null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
@@ -193,9 +198,12 @@ class AgentInfo(BaseUser):
 
 
 class BusinessPartner(BaseUser):
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
+
+    def save(self, *args, **kwargs):
+        self.type = 'business_partner'
+        super(BusinessPartner, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.first_name
@@ -207,6 +215,10 @@ class LocationPartner(BaseUser):
     class Meta:
         verbose_name = 'Location Partner'
         verbose_name_plural = 'Location Partners'
+
+    def save(self, *args, **kwargs):
+        self.type = 'location_partner'
+        super(LocationPartner, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.first_name

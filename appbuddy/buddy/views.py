@@ -7,7 +7,8 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter
-from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm
+from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
+    BusinessPartnerChangeForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -144,13 +145,19 @@ class BusinessPartnerCreateView(CreateView):
     def get_success_url(self):
         return reverse('businesspartners-list')
 
+    def get_initial(self):
+        return {'type': 'business_partner'}
+
 
 class BusinessPartnerUpdateView(UpdateView):
     model = BusinessPartner
-    form_class = BusinessPartnerCreationForm
+    form_class = BusinessPartnerChangeForm
 
     def get_success_url(self):
         return reverse('businesspartners-list')
+
+    def get_initial(self):
+        return {'type': 'location_partner'}
 
 
 class AppBuddyUserList(APIView):

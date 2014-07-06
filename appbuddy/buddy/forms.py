@@ -105,6 +105,8 @@ class BaseUserCreationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
+        if self.instance.pk:
+            return email
         try:
             BaseUser._default_manager.get(email=email)
         except BaseUser.DoesNotExist:
@@ -133,6 +135,8 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.CharField(required=True)
+    type = forms.CharField(required=False)
+
 
     def __init__(self, *args, **kwargs):
         super(BusinessPartnerCreationForm, self).__init__(*args, **kwargs)
@@ -168,6 +172,47 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
     class Meta:
         model = BusinessPartner
         exclude = ('username', 'password', 'date_joined', 'last_login')
+
+
+class BusinessPartnerChangeForm(forms.ModelForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    type = forms.CharField(required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        super(BusinessPartnerChangeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+
+            Fieldset(
+                'Authentication Information',
+                'email',
+            ),
+            Fieldset(
+                'Personal Info',
+                'first_name',
+                'last_name',
+                'city',
+                'mobile_number',
+                'address',
+            ),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'businesspartners-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = BusinessPartner
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'password1','password2')
 
 
 
