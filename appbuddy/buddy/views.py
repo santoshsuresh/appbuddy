@@ -3,15 +3,17 @@ from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 
 # Create your views here.
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django_filters.views import FilterView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter
+from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter, \
+    LocationInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
-    BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm
+    BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -182,9 +184,7 @@ class LocationPartnerListView(BaseFilterView):
     model = LocationPartner
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return LocationPartner.objects.all()
-        elif self.request.user.type == 'business_partner':
+        if not self.request.user.is_superuser:
             return LocationPartner.objects.filter(business_partner=self.request.user)
         return LocationPartner.objects.all()
 
@@ -210,6 +210,41 @@ class LocationPartnerUpdateView(LoginRequiredMixin, UpdateView):
     def get_initial(self):
         return {'type': 'location_partner', 'business_partner': self.request.user}
 
+
+class LocationListView(BaseFilterView):
+    model = LocationInfo
+    filterset_class = LocationInfoFilter
+    title = 'Location'
+    title_singular = 'Locations'
+    type_name = 'locations'
+    header_names = ['Name', 'Partner', 'City', 'Store Manager Name', 'Device', 'Agent']
+
+
+    def get_queryset(self):
+        if not self.request.user.is_superuser:
+            return LocationInfo.objects.filter(partner__business_partner=self.request.user)
+        return LocationInfo.objects.all()
+
+
+    def get_context_data(self, **kwargs):
+        if not self.request.user.is_superuser:
+            self.filterset.form.fields['partner'].queryset = LocationPartner.objects.filter(
+                business_partner=self.request.user)
+        return super(LocationListView, self).get_context_data(**kwargs)
+
+
+class LocationCreateView(LoginRequiredMixin, CreateView):
+    model = LocationInfo
+    form_class = LocationInfoForm
+
+    def get_form(self, form_class):
+        form = super(LocationCreateView, self).get_form(form_class)
+        if not self.request.user.is_superuser:
+            form.fields['partner'].queryset = LocationPartner.objects.filter(Q(business_partner=self.request.user))
+        return form
+
+    def get_success_url(self):
+        return reverse('locations-list')
 
 
 class AppBuddyUserList(APIView):

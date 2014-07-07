@@ -1,0 +1,19 @@
+{% extends 'buddy/_filter.html' %}
+
+{% block extra_action_buttons %} <a href="#" class="btn btn-danger">Find Unassigned Locations</a>{% endblock %}
+{% block table_content %}
+    <tr>
+        <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.name }}</a>
+        </td>
+
+        <td>{{ obj.partner }}</td>
+        <td>{{ obj.city }}</td>
+        <td>{{ obj.store_manager_name }}</td>
+        <td>{{ obj.device_info }}</td>
+        <td>{{ obj.agent }}</td>
+        <td class="table-action">
+            <a href="#"><i class="fa fa-edit"></i></a>
+        </td>
+    </tr>
+{% endblock %}
+

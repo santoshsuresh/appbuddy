@@ -42,6 +42,10 @@ urlpatterns = patterns('',
     url(r'^locationpartners/add/$', LocationPartnerCreateView.as_view(),name='locationpartners-create'),
     url(r'^locationpartners/edit/(?P<pk>\d+)$', LocationPartnerUpdateView.as_view(),name='locationpartners-edit'),
 
+    url(r'^locations/$', LocationListView.as_view(),name='locations-list'),
+    url(r'^locations/add/$', LocationCreateView.as_view(),name='locations-create'),
+    url(r'^locations/edit/(?P<pk>\d+)$', LocationPartnerUpdateView.as_view(),name='locations-edit'),
+
 
 
 )

@@ -225,7 +225,7 @@ class LocationPartner(BaseUser):
         super(LocationPartner, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.first_name
+        return "%s %s" % (self.first_name, self.last_name)
 
 
 class LocationInfo(TimeStampedModel):

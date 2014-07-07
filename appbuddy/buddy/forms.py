@@ -4,7 +4,8 @@ from crispy_forms.layout import Submit, Layout, Button, ButtonHolder, HTML, Fiel
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner, LocationPartner
+from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner, LocationPartner, \
+    LocationInfo
 
 
 class DeviceInfoForm(ModelForm):
@@ -94,6 +95,38 @@ class DataCardInfoForm(ModelForm):
 
     class Meta:
         model = DataCardInfo
+
+class LocationInfoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LocationInfoForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-7'
+        self.helper.layout = Layout(
+            'name',
+            'partner',
+            'address',
+            'area',
+            'city',
+            'store_manager_name',
+            'store_manager_number',
+            'foot_fall',
+            'landline_number',
+            'preferred_days',
+            'preferred_time',
+            'latitude',
+            'longitude',
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'cards-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = LocationInfo
+        exclude = ('device_info', 'agent', )
 
 
 class BaseUserCreationForm(forms.ModelForm):
