@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.contrib.auth.forms import SetPasswordForm
 from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
@@ -11,6 +12,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
                        url(r'^$', DashboardView.as_view()),
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
+                       url(r'^accounts/password_change/$', 'django.contrib.auth.views.password_change', {'password_change_form': SetPasswordForm},name='change_password'),
+                       url(r'^accounts/password_change_done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
                        url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/accounts/login/'},
                            name='logout', ),
                        url(r'^appbuddy/', include('buddy.urls')),
