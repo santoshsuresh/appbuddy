@@ -1,10 +1,10 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Button, ButtonHolder, HTML, Field, Fieldset
+from crispy_forms.layout import Submit, Layout, Button, ButtonHolder, HTML, Field, Fieldset, Hidden
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner
+from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner, LocationPartner
 
 
 class DeviceInfoForm(ModelForm):
@@ -174,6 +174,50 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
         exclude = ('username', 'password', 'date_joined', 'last_login')
 
 
+class LocationPartnerCreationForm(BaseUserCreationForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    type = forms.CharField(required=False)
+    business_partner = forms.ModelChoiceField(queryset=BusinessPartner.objects.all(), required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        super(LocationPartnerCreationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Authentication Information',
+                'email',
+                'password1',
+                'password2',
+                Field('business_partner', type='hidden')
+            ),
+            Fieldset(
+                'Personal Info',
+                'first_name',
+                'last_name',
+                'city',
+                'mobile_number',
+                'address',
+            ),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'locationpartners-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = LocationPartner
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'baseuser_ptr')
+
+
 class BusinessPartnerChangeForm(forms.ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
@@ -212,7 +256,48 @@ class BusinessPartnerChangeForm(forms.ModelForm):
 
     class Meta:
         model = BusinessPartner
-        exclude = ('username', 'password', 'date_joined', 'last_login', 'password1','password2')
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'password1', 'password2')
 
+
+class LocationPartnerChangeForm(forms.ModelForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    type = forms.CharField(required=False)
+    business_partner = forms.ModelChoiceField(queryset=BusinessPartner.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(LocationPartnerChangeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+
+            Fieldset(
+                'Authentication Information',
+                'email',
+                Field('business_partner', type='hidden')
+            ),
+            Fieldset(
+                'Personal Info',
+                'first_name',
+                'last_name',
+                'city',
+                'mobile_number',
+                'address',
+            ),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'locationpartners-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = LocationPartner
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'password1', 'password2')
 
 

@@ -52,6 +52,11 @@
                     <li><a href="{% url 'cards-list'  %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
                     <li><a href="{% url 'businesspartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Business Partners</span></a></li>
                 {% endif %}
+
+                {% if request.user.is_superuser or request.user.type == 'business_partner'%}
+                    <li><a href="{% url 'locationpartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Location Partners</span></a></li>
+                {% endif %}
+
                 <li><a href="/"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>
 
             </ul>

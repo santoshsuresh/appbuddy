@@ -1,0 +1,14 @@
+{% extends 'buddy/_filter.html' %}
+
+{% block table_content %}
+    <tr>
+        <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.email }}</a>
+        </td>
+
+        <td>{{ obj.first_name }}</td>
+        <td>{{ obj.last_name }}</td>
+        <td>{{ obj.mobile_number }}</td>
+        <td>{{ obj.city }}</td>
+    </tr>
+{% endblock %}
+

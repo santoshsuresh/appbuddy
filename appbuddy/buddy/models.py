@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from model_utils import Choices
+from model_utils.managers import InheritanceManager
 from model_utils.models import TimeStampedModel
 from .playapi.googleplay import GooglePlayAPI
 
@@ -177,6 +178,7 @@ class BaseUser(AbstractBaseUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
 
     objects = AppBuddyUserManager()
+    inherited = InheritanceManager()
 
     def __unicode__(self):
         return self.first_name
@@ -203,6 +205,7 @@ class BusinessPartner(BaseUser):
 
     def save(self, *args, **kwargs):
         self.type = 'business_partner'
+        self.is_active = 'True'
         super(BusinessPartner, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -210,7 +213,7 @@ class BusinessPartner(BaseUser):
 
 
 class LocationPartner(BaseUser):
-    businessPartner = models.ForeignKey('BusinessPartner', related_name='location_partners')
+    business_partner = models.ForeignKey('BusinessPartner', related_name='location_partners')
 
     class Meta:
         verbose_name = 'Location Partner'
@@ -218,6 +221,7 @@ class LocationPartner(BaseUser):
 
     def save(self, *args, **kwargs):
         self.type = 'location_partner'
+        self.is_active = 'True'
         super(LocationPartner, self).save(*args, **kwargs)
 
     def __unicode__(self):

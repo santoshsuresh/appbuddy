@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
-    BusinessPartnerChangeForm
+    BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -22,7 +22,7 @@ class SuperuserRequiredMixin(object):
         return super(SuperuserRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class BaseFilterView(SuperuserRequiredMixin, FilterView):
+class BaseFilterView(LoginRequiredMixin, FilterView):
     header_names = []
     title = ''
     title_singular = ''
@@ -51,7 +51,7 @@ class DeviceInfoListView(BaseFilterView):
     type_name = 'devices'
 
 
-class DeviceInfoCreateView(CreateView):
+class DeviceInfoCreateView(LoginRequiredMixin, CreateView):
     model = DeviceInfo
     form_class = DeviceInfoForm
 
@@ -59,7 +59,7 @@ class DeviceInfoCreateView(CreateView):
         return reverse('devices-list')
 
 
-class DeviceInfoUpdateView(UpdateView):
+class DeviceInfoUpdateView(LoginRequiredMixin, UpdateView):
     model = DeviceInfo
     form_class = DeviceInfoForm
 
@@ -76,7 +76,7 @@ class CategoryListView(BaseFilterView):
     type_name = 'categories'
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
 
@@ -84,7 +84,7 @@ class CategoryCreateView(CreateView):
         return reverse('categories-list')
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = Category
     form_class = CategoryForm
 
@@ -101,7 +101,7 @@ class CityInfoListView(BaseFilterView):
     type_name = 'cities'
 
 
-class CityInfoCreateView(CreateView):
+class CityInfoCreateView(LoginRequiredMixin, CreateView):
     model = CityInfo
     form_class = CityInfoForm
 
@@ -109,7 +109,7 @@ class CityInfoCreateView(CreateView):
         return reverse('cities-list')
 
 
-class CityInfoUpdateView(UpdateView):
+class CityInfoUpdateView(LoginRequiredMixin, UpdateView):
     model = CityInfo
     form_class = CityInfoForm
 
@@ -126,7 +126,7 @@ class DataCardInfoListView(BaseFilterView):
     type_name = 'cards'
 
 
-class DataCardInfoCreateView(CreateView):
+class DataCardInfoCreateView(LoginRequiredMixin, CreateView):
     model = DataCardInfo
     form_class = DataCardInfoForm
 
@@ -134,7 +134,7 @@ class DataCardInfoCreateView(CreateView):
         return reverse('cards-list')
 
 
-class DataCardInfoUpdateView(UpdateView):
+class DataCardInfoUpdateView(LoginRequiredMixin, UpdateView):
     model = DataCardInfo
     form_class = DataCardInfoForm
 
@@ -151,7 +151,7 @@ class BusinessPartnerListView(BaseFilterView):
     model = BusinessPartner
 
 
-class BusinessPartnerCreateView(CreateView):
+class BusinessPartnerCreateView(LoginRequiredMixin, CreateView):
     model = BusinessPartner
     form_class = BusinessPartnerCreationForm
 
@@ -162,7 +162,7 @@ class BusinessPartnerCreateView(CreateView):
         return {'type': 'business_partner'}
 
 
-class BusinessPartnerUpdateView(UpdateView):
+class BusinessPartnerUpdateView(LoginRequiredMixin, UpdateView):
     model = BusinessPartner
     form_class = BusinessPartnerChangeForm
 
@@ -171,6 +171,45 @@ class BusinessPartnerUpdateView(UpdateView):
 
     def get_initial(self):
         return {'type': 'business_partner'}
+
+
+class LocationPartnerListView(BaseFilterView):
+    header_names = ['Email Address', 'first_name', 'last_name', 'mobile_number', 'city']
+    filterset_class = BusinessPartnerFilter
+    title = 'Location Partners'
+    title_singular = 'Location Partner'
+    type_name = 'locationpartners'
+    model = LocationPartner
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return LocationPartner.objects.all()
+        elif self.request.user.type == 'business_partner':
+            return LocationPartner.objects.filter(business_partner=self.request.user)
+        return LocationPartner.objects.all()
+
+
+class LocationPartnerCreateView(LoginRequiredMixin, CreateView):
+    model = LocationPartner
+    form_class = LocationPartnerCreationForm
+
+    def get_success_url(self):
+        return reverse('locationpartners-list')
+
+    def get_initial(self):
+        return {'type': 'location_partner', 'business_partner': self.request.user}
+
+
+class LocationPartnerUpdateView(LoginRequiredMixin, UpdateView):
+    model = LocationPartner
+    form_class = LocationPartnerChangeForm
+
+    def get_success_url(self):
+        return reverse('locationpartners-list')
+
+    def get_initial(self):
+        return {'type': 'location_partner', 'business_partner': self.request.user}
+
 
 
 class AppBuddyUserList(APIView):
