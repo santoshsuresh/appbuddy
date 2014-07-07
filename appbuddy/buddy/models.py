@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserM
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 from model_utils import Choices
 from model_utils.managers import InheritanceManager
@@ -97,9 +98,9 @@ class AppInfo(TimeStampedModel):
     download_time_wifi = models.PositiveIntegerField(default=0)
     download_time_3g = models.PositiveIntegerField(default=0)
     download_time_edge = models.PositiveIntegerField(default=0)
-    active = models.BooleanField()
+    active = models.BooleanField(default=True)
     open_on_install = models.BooleanField(default=True)
-    app_version = models.CharField(max_length=50, default=None, blank=True, null=True)
+    app_version = models.CharField(max_length=50, default=None, blank=True, null=True, editable=False)
     thumbnail = models.ImageField(upload_to='thumbnails')
     categories = models.ManyToManyField(to=Category)
     min_android_version = models.CharField(max_length=10, default=14)
@@ -154,7 +155,8 @@ class AppBuddyUserManager(UserManager):
 
 
 class BaseUser(AbstractBaseUser):
-    CHOICES = Choices(('agent','Agent'),('business_partner','Business Partner'),('location_partner','Location Partner'))
+    CHOICES = Choices(('agent', 'Agent'), ('business_partner', 'Business Partner'),
+                      ('location_partner', 'Location Partner'))
     email = models.EmailField(unique=True, )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -172,7 +174,7 @@ class BaseUser(AbstractBaseUser):
                                     help_text='Designates whether this user should be treated as '
                                               'active. Unselect this instead of deleting registration.')
     date_joined = models.DateTimeField('date joined', default=timezone.now)
-    type = models.TextField(max_length=10, choices=CHOICES,default='agent', blank=True,null=True)
+    type = models.TextField(max_length=10, choices=CHOICES, default='agent', blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile_number', 'address']
@@ -190,10 +192,21 @@ class AgentInfo(BaseUser):
     mobile_os = models.CharField(max_length=20, default=None, blank=True, null=True, choices=MOBILE_CHOICES)
     make = models.CharField(max_length=50, default=None, blank=True, null=True)
     model = models.CharField(max_length=50, default=None, blank=True, null=True)
+    business_partner = models.ForeignKey('BusinessPartner', related_name='agents')
 
     class Meta:
         verbose_name = 'Promoter'
         verbose_name_plural = 'Promoters'
+
+    def save(self, *args, **kwargs):
+        self.type = 'agent'
+        self.is_active = 'True'
+        max_code = AgentInfo.objects.all().aggregate(Max('agent_id'))
+        if max_code['agent_id__max'] is None:
+            self.agent_id = 20000
+        else:
+            self.agent_id = max_code['agent_id__max'] + 1
+        super(AgentInfo, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.first_name
@@ -243,7 +256,7 @@ class LocationInfo(TimeStampedModel):
     preferred_days = models.CharField(max_length=20, choices=DAY_CHOICES, default='all')
     preferred_time = models.CharField(max_length=20, choices=TIME_CHOICES, default='all')
     device_info = models.OneToOneField(DeviceInfo, related_name='locations', default=None, blank=True, null=True)
-    agent = models.OneToOneField(AgentInfo, related_name='locations', default=None, blank=True, null=True)
+    agent = models.OneToOneField(AgentInfo, related_name='location', default=None, blank=True, null=True)
     latitude = models.DecimalField(max_digits=12, default=None, decimal_places=8, blank=True, null=True)
     longitude = models.DecimalField(max_digits=12, default=None, decimal_places=8, blank=True, null=True)
 

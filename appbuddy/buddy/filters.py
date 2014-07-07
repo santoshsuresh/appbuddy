@@ -3,7 +3,8 @@ from crispy_forms.layout import Layout, Submit
 from django import template
 from django.forms import ModelChoiceField
 from django_filters import FilterSet, CharFilter, ModelChoiceFilter
-from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BusinessPartner, LocationInfo, LocationPartner
+from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BusinessPartner, LocationInfo, LocationPartner, \
+    AgentInfo
 
 
 class DeviceInfoFilter(FilterSet):
@@ -119,6 +120,23 @@ class LocationInfoFilter(FilterSet):
         helper.layout = Layout(
             'partner',
             'city',
+            Submit('submit', 'Filter', css_class='btn-primary'),
+        )
+        self.form.helper = helper
+
+class AgentInfoFilter(FilterSet):
+    class Meta:
+        model = AgentInfo
+        fields = ['city', 'location__partner']
+
+    def __init__(self, *args, **kwargs):
+        super(AgentInfoFilter, self).__init__(*args, **kwargs)
+        helper = FormHelper()
+        helper.form_class = 'form-inline'
+        helper.field_template = 'bootstrap3/layout/inline_field.html'
+        helper.layout = Layout(
+            'city',
+            'location__partner',
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
         self.form.helper = helper

@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner, LocationPartner, \
-    LocationInfo
+    LocationInfo, AgentInfo
 
 
 class DeviceInfoForm(ModelForm):
@@ -106,7 +106,7 @@ class LocationInfoForm(ModelForm):
         self.helper.layout = Layout(
             'name',
             'partner',
-            'address',
+            Field('address', rows=3),
             'area',
             'city',
             'store_manager_name',
@@ -192,7 +192,7 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
                 'last_name',
                 'city',
                 'mobile_number',
-                'address',
+                Field('address', rows=3)
             ),
             HTML("<br/>"),
             FormActions(
@@ -205,6 +205,57 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
     class Meta:
         model = BusinessPartner
         exclude = ('username', 'password', 'date_joined', 'last_login')
+
+class AgentInfoCreationForm(BaseUserCreationForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True,)
+    type = forms.CharField(required=False)
+    business_partner = forms.ModelChoiceField(queryset=BusinessPartner.objects.all(), required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        super(AgentInfoCreationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+
+            Fieldset(
+                'Authentication Information',
+                'email',
+                'password1',
+                'password2',
+                Field('business_partner', type='hidden')
+            ),
+            Fieldset(
+                'Personal Info',
+                'first_name',
+                'last_name',
+                'city',
+                'mobile_number',
+                Field('address', rows=3)
+            ),
+
+            Fieldset(
+                'Mobile Information',
+                'mobile_os',
+                'make',
+                'model'
+            ),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'agent-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = AgentInfo
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'agent_id')
 
 
 class LocationPartnerCreationForm(BaseUserCreationForm):
@@ -236,7 +287,7 @@ class LocationPartnerCreationForm(BaseUserCreationForm):
                 'last_name',
                 'city',
                 'mobile_number',
-                'address',
+                Field('address', rows=3)
             ),
             HTML("<br/>"),
             FormActions(
@@ -270,6 +321,7 @@ class BusinessPartnerChangeForm(forms.ModelForm):
             Fieldset(
                 'Authentication Information',
                 'email',
+                'is_active'
             ),
             Fieldset(
                 'Personal Info',
@@ -277,7 +329,7 @@ class BusinessPartnerChangeForm(forms.ModelForm):
                 'last_name',
                 'city',
                 'mobile_number',
-                'address',
+                Field('address', rows=3)
             ),
             HTML("<br/>"),
             FormActions(
@@ -311,7 +363,8 @@ class LocationPartnerChangeForm(forms.ModelForm):
             Fieldset(
                 'Authentication Information',
                 'email',
-                Field('business_partner', type='hidden')
+                Field('business_partner', type='hidden'),
+                'is_active'
             ),
             Fieldset(
                 'Personal Info',
@@ -319,7 +372,7 @@ class LocationPartnerChangeForm(forms.ModelForm):
                 'last_name',
                 'city',
                 'mobile_number',
-                'address',
+                Field('address', rows=3)
             ),
             HTML("<br/>"),
             FormActions(
@@ -331,6 +384,56 @@ class LocationPartnerChangeForm(forms.ModelForm):
 
     class Meta:
         model = LocationPartner
+        exclude = ('username', 'password', 'date_joined', 'last_login', 'password1', 'password2')
+
+
+class AgentInfoChangeForm(forms.ModelForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    type = forms.CharField(required=False)
+    business_partner = forms.ModelChoiceField(queryset=BusinessPartner.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(AgentInfoChangeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+
+            Fieldset(
+                'Authentication Information',
+                'email',
+                Field('business_partner', type='hidden'),
+                'is_active',
+            ),
+            Fieldset(
+                'Personal Info',
+                'first_name',
+                'last_name',
+                'city',
+                'mobile_number',
+                Field('address', rows=3)
+            ),
+
+            Fieldset(
+                'Mobile Information',
+                'mobile_os',
+                'make',
+                'model'
+            ),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'agent-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = AgentInfo
         exclude = ('username', 'password', 'date_joined', 'last_login', 'password1', 'password2')
 
 

@@ -42,9 +42,13 @@ urlpatterns = patterns('',
     url(r'^locationpartners/add/$', LocationPartnerCreateView.as_view(),name='locationpartners-create'),
     url(r'^locationpartners/edit/(?P<pk>\d+)$', LocationPartnerUpdateView.as_view(),name='locationpartners-edit'),
 
+    url(r'^agent/$', AgentInfoListView.as_view(),name='agent-list'),
+    url(r'^agent/add/$', AgentInfoCreateView.as_view(),name='agent-create'),
+    url(r'^agent/edit/(?P<pk>\d+)$', AgentInfoUpdateView.as_view(),name='agent-edit'),
+
     url(r'^locations/$', LocationListView.as_view(),name='locations-list'),
     url(r'^locations/add/$', LocationCreateView.as_view(),name='locations-create'),
-    url(r'^locations/edit/(?P<pk>\d+)$', LocationPartnerUpdateView.as_view(),name='locations-edit'),
+    url(r'^locations/edit/(?P<pk>\d+)$', LocationUpdateView.as_view(),name='locations-edit'),
 
 
 

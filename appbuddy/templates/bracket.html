@@ -42,7 +42,7 @@
                     <li><a href="signout.html"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>
                 </ul>
             </div>
-
+            {% if request.user.is_superuser or request.user.type != 'agent' %}
             <h5 class="sidebartitle">Navigation</h5>
             <ul class="nav nav-pills nav-stacked nav-bracket">
                 {% if request.user.is_superuser %}
@@ -55,12 +55,14 @@
 
                 {% if request.user.is_superuser or request.user.type == 'business_partner'%}
                     <li><a href="{% url 'locationpartners-list'  %}"><i class="fa fa-suitcase"></i> <span>Location Partners</span></a></li>
-                    <li><a href="{% url 'locations-list'  %}"><i class="fa fa-suitcase"></i> <span>Locations</span></a></li>
+                    <li><a href="{% url 'locations-list'  %}"><i class="fa fa-building"></i> <span>Locations</span></a></li>
+                    <li><a href="{% url 'agent-list'  %}"><i class="fa fa-suitcase"></i> <span>Promoters</span></a></li>
                 {% endif %}
 
 {#                <li><a href="/"><i class="fa fa-users"></i> <span>Agent Information</span></a></li>#}
 
             </ul>
+        {% endif %}
         </div>
         <!-- leftpanelinner -->
     </div>
@@ -95,7 +97,7 @@
         <!-- headerbar -->
 
         <div class="pageheader">
-            <h2>{% block page_title %}<i class="fa fa-home"></i> Welcome{% endblock page_title %}</h2>
+            <h2>{% block page_title %}<i class="fa fa-home"></i> Welcome {{ request.user.first_name }} {{ request.user.last_name }}{% endblock page_title %}</h2>
         </div>
 
         <div class="contentpanel">

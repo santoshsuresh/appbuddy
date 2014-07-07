@@ -11,9 +11,10 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter, \
-    LocationInfoFilter
+    LocationInfoFilter, AgentInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
-    BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm
+    BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm, \
+    AgentInfoCreationForm, AgentInfoChangeForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -145,7 +146,7 @@ class DataCardInfoUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class BusinessPartnerListView(BaseFilterView):
-    header_names = ['Email Address', 'first_name', 'last_name', 'mobile_number', 'city']
+    header_names = ['Email Address', 'First Name', 'Last Name', 'Mobile Number', 'City']
     filterset_class = BusinessPartnerFilter
     title = 'Business Partners'
     title_singular = 'Business Partner'
@@ -176,7 +177,7 @@ class BusinessPartnerUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class LocationPartnerListView(BaseFilterView):
-    header_names = ['Email Address', 'first_name', 'last_name', 'mobile_number', 'city']
+    header_names = ['Email Address', 'First Name', 'Last Name', 'Mobile Number', 'City']
     filterset_class = BusinessPartnerFilter
     title = 'Location Partners'
     title_singular = 'Location Partner'
@@ -211,6 +212,50 @@ class LocationPartnerUpdateView(LoginRequiredMixin, UpdateView):
         return {'type': 'location_partner', 'business_partner': self.request.user}
 
 
+class AgentInfoListView(BaseFilterView):
+    model = AgentInfo
+    filterset_class = AgentInfoFilter
+    title = 'Promoter'
+    title_singular = 'Promoters'
+    type_name = 'agent'
+    header_names = ['Agent Code', 'Name', 'City', 'Mobile Number', 'Location Assigned']
+
+    def get_queryset(self):
+        if not self.request.user.is_superuser:
+            return AgentInfo.objects.filter(business_partner=self.request.user)
+        return AgentInfo.objects.all()
+
+    def get_context_data(self, **kwargs):
+        if not self.request.user.is_superuser:
+            self.filterset.form.fields['location__partner'].queryset = LocationPartner.objects.filter(
+                business_partner=self.request.user)
+        else:
+            self.filterset.form.fields['location__partner'].queryset = LocationPartner.objects.all()
+        return super(AgentInfoListView, self).get_context_data(**kwargs)
+
+
+class AgentInfoCreateView(LoginRequiredMixin, CreateView):
+    model = AgentInfo
+    form_class = AgentInfoCreationForm
+
+    def get_success_url(self):
+        return reverse('agent-list')
+
+    def get_initial(self):
+        return {'type': 'agent', 'business_partner': self.request.user}
+
+
+class AgentInfoUpdateView(LoginRequiredMixin, UpdateView):
+    model = AgentInfo
+    form_class = AgentInfoChangeForm
+
+    def get_success_url(self):
+        return reverse('agent-list')
+
+    def get_initial(self):
+        return {'type': 'agent', 'business_partner': self.request.user}
+
+
 class LocationListView(BaseFilterView):
     model = LocationInfo
     filterset_class = LocationInfoFilter
@@ -219,17 +264,17 @@ class LocationListView(BaseFilterView):
     type_name = 'locations'
     header_names = ['Name', 'Partner', 'City', 'Store Manager Name', 'Device', 'Agent']
 
-
     def get_queryset(self):
         if not self.request.user.is_superuser:
             return LocationInfo.objects.filter(partner__business_partner=self.request.user)
         return LocationInfo.objects.all()
 
-
     def get_context_data(self, **kwargs):
         if not self.request.user.is_superuser:
             self.filterset.form.fields['partner'].queryset = LocationPartner.objects.filter(
                 business_partner=self.request.user)
+        else:
+            self.filterset.form.fields['partner'].queryset = LocationPartner.objects.all()
         return super(LocationListView, self).get_context_data(**kwargs)
 
 
@@ -239,6 +284,20 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class):
         form = super(LocationCreateView, self).get_form(form_class)
+        if not self.request.user.is_superuser:
+            form.fields['partner'].queryset = LocationPartner.objects.filter(Q(business_partner=self.request.user))
+        return form
+
+    def get_success_url(self):
+        return reverse('locations-list')
+
+
+class LocationUpdateView(LoginRequiredMixin, UpdateView):
+    model = LocationInfo
+    form_class = LocationInfoForm
+
+    def get_form(self, form_class):
+        form = super(LocationUpdateView, self).get_form(form_class)
         if not self.request.user.is_superuser:
             form.fields['partner'].queryset = LocationPartner.objects.filter(Q(business_partner=self.request.user))
         return form
