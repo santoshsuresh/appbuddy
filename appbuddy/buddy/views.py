@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 # Create your views here.
 from django.db.models import Q
+from django.forms.models import modelformset_factory
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django_filters.views import FilterView
@@ -11,10 +12,10 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter, \
-    LocationInfoFilter, AgentInfoFilter
+    LocationInfoFilter, AgentInfoFilter, AppInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
     BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm, \
-    AgentInfoCreationForm, AgentInfoChangeForm
+    AgentInfoCreationForm, AgentInfoChangeForm, AppInfoForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -52,6 +53,30 @@ class DeviceInfoListView(BaseFilterView):
     title = 'Hotspots'
     title_singular = 'Hotspot'
     type_name = 'devices'
+
+
+class AppInfoListView(BaseFilterView):
+    model = AppInfo
+    filterset_class = AppInfoFilter
+    header_names = ['Name', 'Package Name', 'App Version', 'Download Size', 'Active']
+    title = 'Applications'
+    title_singular = 'Application'
+    type_name = 'applications'
+
+
+class AppInfoCreateView(LoginRequiredMixin, CreateView):
+    model = AppInfo
+    form_class = AppInfoForm
+
+    def get_success_url(self):
+        return reverse('applications-list')
+
+class AppInfoUpdateView(LoginRequiredMixin, UpdateView):
+    model = AppInfo
+    form_class = AppInfoForm
+
+    def get_success_url(self):
+        return reverse('applications-list')
 
 
 class DeviceInfoCreateView(LoginRequiredMixin, CreateView):

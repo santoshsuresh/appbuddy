@@ -1,10 +1,10 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
+from crispy_forms.layout import Layout, Submit, Field
 from django import template
 from django.forms import ModelChoiceField
 from django_filters import FilterSet, CharFilter, ModelChoiceFilter
 from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BusinessPartner, LocationInfo, LocationPartner, \
-    AgentInfo
+    AgentInfo, AppInfo
 
 
 class DeviceInfoFilter(FilterSet):
@@ -139,5 +139,24 @@ class AgentInfoFilter(FilterSet):
             'location__partner',
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
+        self.form.helper = helper
+
+class AppInfoFilter(FilterSet):
+    class Meta:
+        model = AppInfo
+        fields = ['active', 'package_name', 'name']
+
+    def __init__(self, *args, **kwargs):
+        super(AppInfoFilter, self).__init__(*args, **kwargs)
+        helper = FormHelper()
+        helper.form_class = 'form-inline'
+        helper.field_template = 'bootstrap3/layout/inline_field.html'
+        helper.layout = Layout(
+            'package_name',
+            'name',
+            Field('active', css_class='nullbooleanselect select', label='', labelclass='hidden'),
+            Submit('submit', 'Filter', css_class='btn-primary'),
+        )
+        helper.form_show_labels = False
         self.form.helper = helper
 

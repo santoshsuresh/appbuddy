@@ -21,7 +21,7 @@ class AppInfoAdmin(BaseAdmin):
     list_display = (
         'name', 'active', 'package_name', 'open_on_install', 'app_version', 'min_android_version', 'download_in_mb')
     list_filter = ('active', 'open_on_install')
-    filter_horizontal = ('cities', 'categories', 'whitelisted_urls')
+    filter_horizontal = ('cities', 'categories',)
 
     def download_in_mb(self, obj):
         if obj.download_size > 0:

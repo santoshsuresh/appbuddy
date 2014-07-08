@@ -50,6 +50,10 @@ urlpatterns = patterns('',
     url(r'^locations/add/$', LocationCreateView.as_view(),name='locations-create'),
     url(r'^locations/edit/(?P<pk>\d+)$', LocationUpdateView.as_view(),name='locations-edit'),
 
+    url(r'^applications/$', AppInfoListView.as_view(),name='applications-list'),
+    url(r'^applications/add/$', AppInfoCreateView.as_view(),name='applications-create'),
+    url(r'^applications/edit/(?P<pk>\d+)$', AppInfoUpdateView.as_view(),name='applications-edit'),
+
 
 
 )

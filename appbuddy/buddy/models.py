@@ -95,9 +95,9 @@ class AppInfo(TimeStampedModel):
     description = models.TextField()
     package_name = models.CharField(max_length=100)
     market_url = models.CharField(max_length=255)
-    download_time_wifi = models.PositiveIntegerField(default=0)
-    download_time_3g = models.PositiveIntegerField(default=0)
-    download_time_edge = models.PositiveIntegerField(default=0)
+    download_time_wifi = models.PositiveIntegerField(default=0, verbose_name='Wifi Download Time')
+    download_time_3g = models.PositiveIntegerField(default=0, verbose_name='3G Download Time')
+    download_time_edge = models.PositiveIntegerField(default=0, verbose_name='Edget Download Time')
     active = models.BooleanField(default=True)
     open_on_install = models.BooleanField(default=True)
     app_version = models.CharField(max_length=50, default=None, blank=True, null=True, editable=False)
@@ -105,7 +105,8 @@ class AppInfo(TimeStampedModel):
     categories = models.ManyToManyField(to=Category)
     min_android_version = models.CharField(max_length=10, default=14)
     cities = models.ManyToManyField('CityInfo', related_name='apps', )
-    whitelisted_urls = models.ManyToManyField('WhitelistUrl', related_name='apps')
+    dns_whitelist = models.TextField(verbose_name='List of URLs to whitelist in DNS', default=None, blank=True, null=True, help_text='Provide a list of dns urls separated by commas')
+    proxy_whitelist = models.TextField(verbose_name='List of URLs to whitelist in Proxy', default=None, blank=True, null=True, help_text='Provide a list of <b>proxy</b> urls separated by commas')
     download_size = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -119,6 +120,12 @@ class AppInfo(TimeStampedModel):
         doc = response.docV2
         self.download_size = doc.details.appDetails.installationSize
         self.app_version = doc.details.appDetails.versionCode
+
+    def download_in_mb(self):
+        if self.download_size > 0:
+            return "%.2f MB" % (self.download_size / 1024.0 / 1024.0)
+        return "0 MB"
+
 
     def save(self, *args, **kwargs):
         self._get_app_version_from_playstore()

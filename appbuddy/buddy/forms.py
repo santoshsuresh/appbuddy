@@ -1,11 +1,12 @@
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import FormActions, TabHolder, Tab
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Button, ButtonHolder, HTML, Field, Fieldset, Hidden
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
+
 from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BaseUser, BusinessPartner, LocationPartner, \
-    LocationInfo, AgentInfo
+    LocationInfo, AgentInfo, AppInfo, WhitelistUrl
 
 
 class DeviceInfoForm(ModelForm):
@@ -95,6 +96,7 @@ class DataCardInfoForm(ModelForm):
 
     class Meta:
         model = DataCardInfo
+
 
 class LocationInfoForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -206,10 +208,11 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
         model = BusinessPartner
         exclude = ('username', 'password', 'date_joined', 'last_login')
 
+
 class AgentInfoCreationForm(BaseUserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    email = forms.CharField(required=True,)
+    email = forms.CharField(required=True, )
     type = forms.CharField(required=False)
     business_partner = forms.ModelChoiceField(queryset=BusinessPartner.objects.all(), required=False)
 
@@ -436,4 +439,40 @@ class AgentInfoChangeForm(forms.ModelForm):
         model = AgentInfo
         exclude = ('username', 'password', 'date_joined', 'last_login', 'password1', 'password2')
 
+
+class AppInfoForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AppInfoForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs['autocomplete'] = 'off'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+            'package_name',
+            'name',
+            Field('description', rows=4),
+            'market_url',
+            'categories',
+            'cities',
+            'min_android_version',
+            'active',
+            'open_on_install',
+            'download_time_wifi',
+            'download_time_3g',
+            'download_time_edge',
+            'thumbnail',
+            Field('proxy_whitelist', rows=3),
+            Field('dns_whitelist', rows=3),
+            HTML("<br/>"),
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'applications-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = AppInfo
 
