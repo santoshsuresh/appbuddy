@@ -1,19 +1,30 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
-from django.contrib.auth.forms import SetPasswordForm
-from django.views.generic import TemplateView
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from buddy.forms import AppBuddyPasswordResetForm
 from buddy.views import DashboardView
+
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
                        url(r'^$', DashboardView.as_view()),
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
-                       url(r'^accounts/password_change/$', 'django.contrib.auth.views.password_change', {'password_change_form': SetPasswordForm},name='change_password'),
-                       url(r'^accounts/password_change_done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
+                       url(r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
+                           {'password_change_form': SetPasswordForm}, name='change_password'),
+                       url(r'^accounts/password_reset/$', 'django.contrib.auth.views.password_reset',
+                           {'password_reset_form': AppBuddyPasswordResetForm}, name='reset_password'),
+                       url(r'^accounts/password_reset_done/$', 'django.contrib.auth.views.password_reset_done',
+                           name='password_reset_done'),
+                       url(r'^accounts/password_reset_complete/$', 'django.contrib.auth.views.password_reset_complete',
+                           name='password_reset_complete'),
+                       url(r'^accounts/password_reset_confirm/(?P<uidb64>.+)/(?P<token>.+)$', 'django.contrib.auth.views.password_reset_confirm',
+                           name='password_reset_confirm'),
+                       url(r'^accounts/password_change_done/$', 'django.contrib.auth.views.password_change_done',
+                           name='password_change_done'),
                        url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/accounts/login/'},
                            name='logout', ),
                        url(r'^appbuddy/', include('buddy.urls')),
