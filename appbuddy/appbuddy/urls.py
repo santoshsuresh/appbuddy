@@ -11,7 +11,7 @@ from buddy.views import DashboardView
 admin.autodiscover()
 
 urlpatterns = patterns('',
-                       url(r'^$', DashboardView.as_view()),
+                       url(r'^$', DashboardView.as_view(), name='dashboard'),
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
                        url(r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
                            {'password_change_form': SetPasswordForm}, name='change_password'),

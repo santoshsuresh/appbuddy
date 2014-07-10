@@ -267,6 +267,13 @@ class AgentInfoCreationForm(BaseUserCreationForm):
         model = AgentInfo
         exclude = ('username', 'password', 'date_joined', 'last_login', 'agent_id')
 
+    def save(self, commit=True):
+        user = super(AgentInfoCreationForm, self).save(commit)
+
+        return user
+
+
+
 
 class LocationPartnerCreationForm(BaseUserCreationForm):
     first_name = forms.CharField(required=True)
