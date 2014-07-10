@@ -273,8 +273,6 @@ class AgentInfoCreationForm(BaseUserCreationForm):
         return user
 
 
-
-
 class LocationPartnerCreationForm(BaseUserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
@@ -455,7 +453,6 @@ class AgentInfoChangeForm(forms.ModelForm):
 
 
 class AppInfoForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(AppInfoForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -535,4 +532,30 @@ class AppBuddyPasswordResetForm(forms.Form):
             msg.attach_alternative(email, "text/html")
             msg.send()
             # send_mail(subject, email, from_email, [user.email])
+
+
+class LocationAssignForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LocationAssignForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-4'
+        self.helper.field_class = 'col-lg-7'
+        self.helper.layout = Layout(
+            'device_info',
+            'agent',
+            FormActions(
+                Submit('submit', 'Submit', css_class='btn-primary'),
+                HTML('<a href="{% url \'locations-list\' %}" class="btn"/>Cancel</a>'),
+                css_class='center-block form-center'
+            )
+        )
+
+    class Meta:
+        model = LocationInfo
+        exclude = (
+            'name', 'partner', 'address', 'area', 'city', 'store_manager_name', 'store_manager_number', 'foot_fall',
+            'landline_number', 'preferred_days', 'preferred_time', 'latitude', 'longitude' )
+
+
 

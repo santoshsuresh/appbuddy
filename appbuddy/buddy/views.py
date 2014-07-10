@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms.models import modelformset_factory
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django_filters.views import FilterView
 from rest_framework import status, permissions
@@ -15,7 +16,7 @@ from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardF
     LocationInfoFilter, AgentInfoFilter, AppInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
     BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm, \
-    AgentInfoCreationForm, AgentInfoChangeForm, AppInfoForm
+    AgentInfoCreationForm, AgentInfoChangeForm, AppInfoForm, LocationAssignForm
 from .models import *
 from .serializers import AppBuddySerializer
 
@@ -26,6 +27,7 @@ class SuperuserRequiredMixin(object):
         return super(SuperuserRequiredMixin, self).dispatch(*args, **kwargs)
 
 
+# @csrf_exempt
 class BaseFilterView(LoginRequiredMixin, FilterView):
     header_names = []
     title = ''
@@ -70,6 +72,7 @@ class AppInfoCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('applications-list')
+
 
 class AppInfoUpdateView(LoginRequiredMixin, UpdateView):
     model = AppInfo
@@ -303,6 +306,12 @@ class LocationListView(BaseFilterView):
         return super(LocationListView, self).get_context_data(**kwargs)
 
 
+class UnassignedLocationListView(LocationListView):
+    def get_queryset(self):
+        queryset = super(UnassignedLocationListView, self).get_queryset();
+        return queryset.filter(Q(device_info__isnull=True) | Q(agent__isnull=True))
+
+
 class LocationCreateView(LoginRequiredMixin, CreateView):
     model = LocationInfo
     form_class = LocationInfoForm
@@ -325,6 +334,20 @@ class LocationUpdateView(LoginRequiredMixin, UpdateView):
         form = super(LocationUpdateView, self).get_form(form_class)
         if not self.request.user.is_superuser:
             form.fields['partner'].queryset = LocationPartner.objects.filter(Q(business_partner=self.request.user))
+        return form
+
+    def get_success_url(self):
+        return reverse('locations-list')
+
+
+class LocationAssignView(LoginRequiredMixin, UpdateView):
+    model = LocationInfo
+    form_class = LocationAssignForm
+
+    def get_form(self, form_class):
+        form = super(LocationAssignView, self).get_form(form_class)
+        if not self.request.user.is_superuser:
+            form.fields['agent'].queryset = AgentInfo.objects.filter(Q(business_partner=self.request.user))
         return form
 
     def get_success_url(self):

@@ -47,12 +47,15 @@ urlpatterns = patterns('',
     url(r'^agent/edit/(?P<pk>\d+)$', AgentInfoUpdateView.as_view(),name='agent-edit'),
 
     url(r'^locations/$', LocationListView.as_view(),name='locations-list'),
+    url(r'^locations/unassigned$', UnassignedLocationListView.as_view(),name='unassigned-list'),
     url(r'^locations/add/$', LocationCreateView.as_view(),name='locations-create'),
     url(r'^locations/edit/(?P<pk>\d+)$', LocationUpdateView.as_view(),name='locations-edit'),
 
     url(r'^applications/$', AppInfoListView.as_view(),name='applications-list'),
     url(r'^applications/add/$', AppInfoCreateView.as_view(),name='applications-create'),
     url(r'^applications/edit/(?P<pk>\d+)$', AppInfoUpdateView.as_view(),name='applications-edit'),
+
+    url(r'^locations/assign/(?P<pk>\d+)$', LocationAssignView.as_view(), name='assign-location')
 
 
 

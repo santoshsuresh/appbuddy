@@ -1,6 +1,19 @@
 {% extends 'buddy/_filter.html' %}
 
-{% block extra_action_buttons %} <a href="#" class="btn btn-danger">Find Unassigned Locations</a>{% endblock %}
+{% block action_buttons %}
+    {%  if not request.user.is_superuser %}
+        <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
+    {% endif %}
+{% endblock %}
+
+{% block extra_action_buttons %}
+
+    {% if request.get_full_path == '/appbuddy/locations/unassigned' %}
+        <a href="{% url 'locations-list' %}" class="btn btn-success">All Locations</a>
+    {% else %}
+        <a href="{% url 'unassigned-list' %}" class="btn btn-danger">Find Unassigned Locations</a>
+    {% endif %}
+{% endblock %}
 {% block table_content %}
     <tr>
         <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.name }}</a>
@@ -12,7 +25,7 @@
         <td>{{ obj.device_info }}</td>
         <td>{{ obj.agent }}</td>
         <td class="table-action">
-            <a href="#"><i class="fa fa-edit"></i></a>
+            <a href="{% url 'assign-location' obj.pk %}"><i class="fa fa-edit"></i></a>
         </td>
     </tr>
 {% endblock %}

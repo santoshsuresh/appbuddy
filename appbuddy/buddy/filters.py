@@ -3,6 +3,7 @@ from crispy_forms.layout import Layout, Submit, Field
 from django import template
 from django.forms import ModelChoiceField
 from django_filters import FilterSet, CharFilter, ModelChoiceFilter
+import django_filters
 from .models import DeviceInfo, Category, CityInfo, DataCardInfo, BusinessPartner, LocationInfo, LocationPartner, \
     AgentInfo, AppInfo
 
@@ -108,6 +109,7 @@ class BusinessPartnerFilter(FilterSet):
 
 
 class LocationInfoFilter(FilterSet):
+
     class Meta:
         model = LocationInfo
         fields = ['partner', 'city']

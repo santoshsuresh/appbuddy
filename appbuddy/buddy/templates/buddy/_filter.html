@@ -5,11 +5,12 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <div class="row pull-right">
                 {% block extra_action_buttons %} {% endblock %}
-                <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
-
+                {% block action_buttons %}
+                    <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
+                {% endblock %}
             </div>
             <p></p>
 
