@@ -189,6 +189,11 @@ class BaseUser(AbstractBaseUser):
     objects = AppBuddyUserManager()
     inherited = InheritanceManager()
 
+
+    def has_perms(self, perm_list, obj=None):
+        return True
+
+
     def __unicode__(self):
         return self.first_name
 

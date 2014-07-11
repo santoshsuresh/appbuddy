@@ -8,7 +8,7 @@ from os import makedirs
 from os.path import join, normpath, exists
 from rest_framework.parsers import JSONParser
 from .playapi.googleplay import GooglePlayAPI
-from .models import AppBuddyUser, AgentInfo, AppInfo
+from .models import *
 
 
 @shared_task
@@ -37,9 +37,28 @@ def log_appbuddy_install(*args, **kwargs):
     stream = BytesIO(log_data)
     data = JSONParser().parse(stream)
     user = get_object_or_None(AppBuddyUser, device_id=data.get('device_id'))
+
     if user is None:
+        device_id = data.get('device_id')
+        print data
         agent = get_object_or_None(AgentInfo, agent_id=data.get('agent_id'))
-
-    pass
-
+        location = agent.location
+        device_info = get_object_or_None(DeviceInfo, box_identifier=data.get('device_info_id'))
+        imei = data.get('imei', '')
+        make = data.get('make', '')
+        model = data.get('model', '')
+        mac_address = data.get('mac_address', '')
+        app_version = data.get('app_version', '')
+        os_version = data.get('os_version', '')
+        emails = data.get('emails', '')
+        phone_number = data.get('phone_number', '')
+        packages = data.get('packages')
+        user = AppBuddyUser.objects.create(device_id=device_id, imei=imei, mac_address=mac_address, agent_info=agent,
+                                   device_info=device_info, location_info=location, make=make, model=model,
+                                   app_version=app_version, os_version=os_version, email_address=emails,
+                                   phone_number=phone_number, app_packages=packages, install_count=1)
+        user.save()
+    else:
+        user.install_count += 1
+        user.save()
 
