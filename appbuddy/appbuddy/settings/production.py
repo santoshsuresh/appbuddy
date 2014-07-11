@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['appbuddy.gobuzz.mobi']
 # EMAIL_HOST_PASSWORD = environ.get('EMAIL_HOST_PASSWORD', '')
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-user
-# EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', 'your_email@example.com')
+EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', 'itadmin@telibrahma.com')
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 # EMAIL_PORT = environ.get('EMAIL_PORT', 587)
