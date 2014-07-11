@@ -70,8 +70,8 @@ def log_app_install(*args, **kwargs):
     data = JSONParser().parse(stream)
     user_info = get_object_or_None(AppBuddyUser, device_id=data.get('device_id'))
     package_name = data.get('package_name')
-    install_data = DownloadLog.objects.filter(user_info=user_info, package_name=package_name)
     status = data.get('status', '')
+    install_data = DownloadLog.objects.filter(user_info=user_info, package_name=package_name, status=status)
     if install_data is None:
         device_info = get_object_or_None(DeviceInfo, box_identifier=data.get('device_info_id'))
         location_info = get_object_or_None(LocationInfo, name='Default Telibrahma Location')
@@ -96,10 +96,6 @@ def log_app_install(*args, **kwargs):
         )
         install_data.save()
     else:
-        if install_data.status != status:
-            install_data.status = status
-        else:
-            install_data.install_count += 1
-
+        install_data.install_count += 1
         install_data.save()
 
