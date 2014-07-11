@@ -1314,3 +1314,11 @@ small.media-desc {
 }
 
 
+.form-center {
+    text-align: center;
+}
+
+.select {
+    height: 34px;
+}
+

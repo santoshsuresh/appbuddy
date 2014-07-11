@@ -36,7 +36,7 @@ class GooglePlayAPI(object):
     toDict() converts the result into a dict, for easier introspection."""
 
     SERVICE = "androidmarket"
-    URL_LOGIN = "https://android.clients.google.com/auth" # "https://www.google.com/accounts/ClientLogin"
+    URL_LOGIN = "https://android.clients.google.com/auth" # "https://www.google.com/registration/ClientLogin"
     ACCOUNT_TYPE_GOOGLE = "GOOGLE"
     ACCOUNT_TYPE_HOSTED = "HOSTED"
     ACCOUNT_TYPE_HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE"

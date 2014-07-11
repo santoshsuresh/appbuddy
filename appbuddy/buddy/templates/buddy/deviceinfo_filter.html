@@ -1,0 +1,14 @@
+{% extends 'buddy/_filter.html' %}
+
+{% block table_content %}
+    <tr>
+        <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.box_identifier }}</a>
+        </td>
+        <td>{{ obj.get_device_type_display }}</td>
+        <td>{{ obj.city.name }}</td>
+        <td>{{ obj.mac_address }}</td>
+        <td>{{ obj.card_info.reference_number }}</td>
+        <td>{{ obj.locations }}</td>
+    </tr>
+{% endblock %}
+

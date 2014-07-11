@@ -26,7 +26,7 @@ DEBUG = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG
-########## END DEBUG CONFIGURATION
+# ######### END DEBUG CONFIGURATION
 
 
 ########## MANAGER CONFIGURATION
@@ -148,6 +148,7 @@ TEMPLATE_LOADERS = (
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
 TEMPLATE_DIRS = (
+    normpath(join(SITE_ROOT, 'buddy', 'templates')),
     normpath(join(SITE_ROOT, 'templates')),
 )
 ########## END TEMPLATE CONFIGURATION
@@ -163,6 +164,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'buddy.middleware.UserTypeMiddleware'
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -189,6 +191,7 @@ DJANGO_APPS = (
     # Admin panel and documentation:
     'grappelli',
     'django.contrib.admin',
+    'crispy_forms',
     # 'django.contrib.admindocs',
 )
 
@@ -201,6 +204,11 @@ LOCAL_APPS = (
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 ########## END APP CONFIGURATION
+
+
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+MAILGUN_ACCESS_KEY = 'key-0gl75fn3ggn-6-r2oylivlsbuxm5k1p5'
+MAILGUN_SERVER_NAME = 'telibrahma.com'
 
 
 ########## LOGGING CONFIGURATION
@@ -247,7 +255,6 @@ WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 INSTALLED_APPS += (
     # Database migration helpers:
     'south',
-    'django_hstore',
     'djcelery',
     'buddy'
 )
@@ -271,11 +278,16 @@ GOOGLE_LOGIN_ID = 'devamanishareeka@gmail.com'
 GOOGLE_PASSWORD = 'lovemeloveme'
 ANDROID_DEVICE_ID = '3e76c5ae927b5931'
 
-
-SOUTH_DATABASE_ADAPTERS = {'default': 'south.db.postgresql_psycopg2'}
-
 APPLICATION_DOWNLOAD_ROOT = normpath(join(MEDIA_ROOT, 'apk'))
 
 
 #Grappelli
-GRAPPELLI_ADMIN_TITLE='Telibrahma AppBuddy'
+GRAPPELLI_ADMIN_TITLE = 'Telibrahma AppBuddy'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+AUTH_USER_MODEL = 'buddy.BaseUser'
+
+CRISPY_FAIL_SILENTLY = False
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/'

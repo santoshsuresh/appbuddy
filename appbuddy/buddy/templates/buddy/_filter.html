@@ -1,0 +1,44 @@
+{% extends 'bracket.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+     {{ title }}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <div class="row pull-right">
+                {% block extra_action_buttons %} {% endblock %}
+                {% block action_buttons %}
+                    <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
+                {% endblock %}
+            </div>
+            <p></p>
+
+            <form class="form form-inline" action="" method="get">
+                {% crispy filter.form %}
+            </form>
+
+            {% if object_list %}
+                <p></p>
+                <div class="table-responsive">
+                    <table class="table table-hover mb30 table-striped {% block extra_table_class %}{% endblock %}">
+                        <thead>
+                        <tr>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in object_list %}
+                            {% block table_content %}{% endblock %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            {% else %}
+                <h3>No {{ title }} Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one</h3>
+            {% endif %}
+    </div>
+{% endblock %}
