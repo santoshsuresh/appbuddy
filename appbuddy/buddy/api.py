@@ -1,10 +1,10 @@
 from rest_framework import viewsets, status
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from .serializers import AppBuddySerializer, AppInfoSerializer
+from .serializers import AppBuddySerializer, AppInfoSerializer, DownloadLogSerializer
 from .models import AppInfo, Category, PushNotificatonRegistration, AgentInfo, AppBuddyUser, DeviceInfo, CityInfo, \
-    WhitelistUrl
-from .tasks import log_appbuddy_install
+    WhitelistUrl, DownloadLog
+from .tasks import log_appbuddy_install, log_app_install
 
 
 class CityInfoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,6 +44,22 @@ class AppBuddyUserViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             json = JSONRenderer().render(serializer.data)
             log_appbuddy_install.delay(log_data=json)
+            return Response(None, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DownloadLogViewSet(viewsets.ModelViewSet):
+    model = DownloadLog
+    serializer_class = DownloadLogSerializer
+
+    def list(self, request, *args, **kwargs):
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        serializer = DownloadLogSerializer(data=request.DATA, files=request.FILES)
+        if serializer.is_valid():
+            json = JSONRenderer().render(serializer.data)
+            log_app_install.delay(log_data=json)
             return Response(None, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

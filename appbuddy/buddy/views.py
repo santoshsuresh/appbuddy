@@ -18,7 +18,7 @@ from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm,
     BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm, \
     AgentInfoCreationForm, AgentInfoChangeForm, AppInfoForm, LocationAssignForm
 from .models import *
-from .serializers import AppBuddySerializer
+from .serializers import AppBuddySerializer, DownloadLogSerializer
 
 
 class SuperuserRequiredMixin(object):
@@ -352,20 +352,3 @@ class LocationAssignView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('locations-list')
-
-
-class AppBuddyUserList(APIView):
-    model = AppBuddyUser
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def get(self, request, format=None):
-        logs = AppBuddyUser.objects.all()
-        serializer = AppBuddySerializer(logs, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = AppBuddySerializer(data=request.DATA)
-        if serializer.is_valid():
-            # send it to celery for processing
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

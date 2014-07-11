@@ -297,7 +297,7 @@ class AppBuddyUser(TimeStampedModel):
     email_address = models.TextField()
     phone_number = models.CharField(max_length=50)
     app_packages = models.TextField()
-    install_count = models.IntegerField(default=0)
+    install_count = models.IntegerField(default=1)
 
 
     class Meta:
@@ -320,3 +320,4 @@ class DownloadLog(TimeStampedModel):
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='installing')
     operator = models.CharField(max_length=50, default=None, blank=True, null=True)
     email_address = models.EmailField()
+    install_count = models.IntegerField(default=1)
