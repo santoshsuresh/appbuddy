@@ -46,6 +46,8 @@ urlpatterns = patterns('',
     url(r'^agent/$', AgentInfoListView.as_view(),name='agent-list'),
     url(r'^agent/add/$', AgentInfoCreateView.as_view(),name='agent-create'),
     url(r'^agent/edit/(?P<pk>\d+)$', AgentInfoUpdateView.as_view(),name='agent-edit'),
+    url(r'^agent/attendance/$', AgentInfoAttendanceView.as_view(),name='agent-mark-attendance'),
+    url(r'^agent/attendance/view/(?P<pk>\d+)$', AgentInfoUpdateView.as_view(),name='agent-view-attendance'),
 
     url(r'^locations/$', LocationListView.as_view(),name='locations-list'),
     url(r'^locations/unassigned$', UnassignedLocationListView.as_view(),name='unassigned-list'),

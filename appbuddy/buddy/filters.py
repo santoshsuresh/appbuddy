@@ -86,6 +86,7 @@ class DataCardFilter(FilterSet):
         )
         self.form.helper = helper
 
+
 class BusinessPartnerFilter(FilterSet):
     email = CharFilter(lookup_type='icontains')
     mobile_number = CharFilter(lookup_type='icontains')
@@ -109,7 +110,6 @@ class BusinessPartnerFilter(FilterSet):
 
 
 class LocationInfoFilter(FilterSet):
-
     class Meta:
         model = LocationInfo
         fields = ['partner', 'city']
@@ -126,10 +126,14 @@ class LocationInfoFilter(FilterSet):
         )
         self.form.helper = helper
 
+
 class AgentInfoFilter(FilterSet):
+    first_name = CharFilter(label='Name', lookup_type='icontains')
+    mobile_number = CharFilter(lookup_type='icontains')
+
     class Meta:
         model = AgentInfo
-        fields = ['city', 'location__partner']
+        fields = ['city', 'location__partner', 'first_name', 'mobile_number']
 
     def __init__(self, *args, **kwargs):
         super(AgentInfoFilter, self).__init__(*args, **kwargs)
@@ -139,6 +143,8 @@ class AgentInfoFilter(FilterSet):
         helper.layout = Layout(
             'city',
             'location__partner',
+            'first_name',
+            'mobile_number',
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
         self.form.helper = helper

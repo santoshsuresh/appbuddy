@@ -105,8 +105,10 @@ class AppInfo(TimeStampedModel):
     categories = models.ManyToManyField(to=Category)
     min_android_version = models.CharField(max_length=10, default=14)
     cities = models.ManyToManyField('CityInfo', related_name='apps', )
-    dns_whitelist = models.TextField(verbose_name='List of URLs to whitelist in DNS', default=None, blank=True, null=True, help_text='Provide a list of dns urls separated by commas')
-    proxy_whitelist = models.TextField(verbose_name='List of URLs to whitelist in Proxy', default=None, blank=True, null=True, help_text='Provide a list of <b>proxy</b> urls separated by commas')
+    dns_whitelist = models.TextField(verbose_name='List of URLs to whitelist in DNS', default=None, blank=True,
+                                     null=True, help_text='Provide a list of dns urls separated by commas')
+    proxy_whitelist = models.TextField(verbose_name='List of URLs to whitelist in Proxy', default=None, blank=True,
+                                       null=True, help_text='Provide a list of <b>proxy</b> urls separated by commas')
     download_size = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -153,7 +155,6 @@ class AppBuddyUserManager(UserManager):
         user.save(using=self._db)
         return user
 
-
     def create_user(self, email, password, first_name, last_name, **extra_fields):
         return self._my_create_user(email, password, first_name, last_name, False, **extra_fields)
 
@@ -188,6 +189,12 @@ class BaseUser(AbstractBaseUser):
 
     objects = AppBuddyUserManager()
     inherited = InheritanceManager()
+
+
+    def _get_full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+    name = property(_get_full_name)
 
 
     def has_perms(self, perm_list, obj=None):
@@ -321,3 +328,8 @@ class DownloadLog(TimeStampedModel):
     operator = models.CharField(max_length=50, default=None, blank=True, null=True)
     email_address = models.EmailField()
     install_count = models.IntegerField(default=1)
+
+
+class AgentAttendance(TimeStampedModel):
+    agent_info = models.ForeignKey(AgentInfo, related_name='attendance')
+    description = models.TextField()

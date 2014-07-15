@@ -4,6 +4,7 @@
      {{ title }}
 {% endblock %}
 {% block content %}
+    {% block top_content %}{% endblock %}
     <div class="row">
         <div class="col-md-11">
             <div class="row pull-right">
@@ -35,6 +36,8 @@
                         {% endfor %}
                         </tbody>
                     </table>
+
+                    {% block extra_content %}{% endblock %}
                 </div>
                 </div>
             {% else %}

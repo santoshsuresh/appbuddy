@@ -5,10 +5,90 @@
         <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.agent_id }}</a>
         </td>
 
-        <td>{{ obj.first_name }} {{ obj.last_name }}</td>
+        <td>{{ obj.name }}</td>
         <td>{{ obj.city }}</td>
         <td>{{ obj.mobile_number }}</td>
         <td>{{ obj.location }}</td>
+        <td class="table-action">
+            <a href="#" data-toggle="modal" data-target="#myModal" data-agent-id="{{ obj.pk }}"
+               data-agent-name="{{ obj.name }}" class="mark-attendance"><i class="fa fa-check"></i></a>
+            <a href="{% url 'agent-view-attendance' obj.pk %}"><i class="fa fa-calendar"></i></a>
+        </td>
     </tr>
 {% endblock %}
 
+{% block top_content %}
+    <div class="alert alert-success alert-dismissible hidden" role="alert" id="success-alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <strong>Success!</strong> Successfull marked attendance
+    </div>
+
+{% endblock %}
+{% block extra_content %}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Mark Attendance - <span class="name"></span></h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="container">
+                        <div class="col-md-12">
+                            <form role="form">
+                                <input type="hidden" name="agent-id" id="agent-id"/>
+
+                                <div class="form-group">
+                                    <label for="description">Comments</label>
+                                    <textarea name="description" id="description" class="form-control"
+                                              rows="4"></textarea>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitAttendance">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(".mark-attendance").click(function (e) {
+            var name = $(this).data('agent-name');
+            var id = $(this).data('agent-id');
+            var modal = $("#myModal");
+            modal.find(".name").html(name);
+            modal.find("#agent-id").val(id);
+            console.log(name);
+            console.log(id);
+        });
+
+        $("#submitAttendance").click(function (e) {
+            var url = "{% url 'agent-mark-attendance' %}";
+            var modal = $("#myModal");
+            var comment = modal.find("#description").val();
+            var id = modal.find("#agent-id").val();
+            var attendance = $.post(url, {'agent-id': id, 'description': comment});
+            attendance.done(function (data) {
+                var success = data.success;
+                if (success) {
+                    $('#myModal').modal('hide')
+                    $("#success-alert").removeClass('hidden');
+                    setTimeout(function(e){
+                        $("#success-alert").addClass('hidden');
+                    }, 10 * 1000)
+                }
+            });
+        });
+    </script>
+{% endblock %}

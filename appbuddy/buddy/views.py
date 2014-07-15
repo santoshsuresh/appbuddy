@@ -1,3 +1,4 @@
+from annoying.functions import get_object_or_None
 from braces.views import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
@@ -5,10 +6,12 @@ from django.core.urlresolvers import reverse
 # Create your views here.
 from django.db.models import Q
 from django.forms.models import modelformset_factory
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, View
 from django_filters.views import FilterView
+import json
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -282,6 +285,24 @@ class AgentInfoUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_initial(self):
         return {'type': 'agent', 'business_partner': self.request.user}
+
+
+class AgentInfoAttendanceView(LoginRequiredMixin, View):
+    def post(self, *args, **kwargs):
+        agent_id = self.request.POST.get('agent-id')
+        agent = get_object_or_None(AgentInfo, pk=agent_id)
+        result = {'success': True}
+        if agent is not None:
+            text = self.request.POST.get('description')
+            attendance = AgentAttendance.objects.create(agent_info=agent, description=text)
+            result['attendance_id'] = attendance.id
+        else:
+            result = {'success': False, 'reason': 'Agent could be found'}
+        return HttpResponse(json.dumps(result), 'application/json')
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super(AgentInfoAttendanceView, self).dispatch(request, *args, **kwargs)
 
 
 class LocationListView(BaseFilterView):
