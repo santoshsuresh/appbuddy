@@ -80,6 +80,7 @@
 <!-- /.header -->
 
 <div id="container">
+    {% block navmenu %}
     <div id="sidebar" class="sidebar-fixed">
         <div id="sidebar-content">
             {% if request.user.is_superuser or request.user.type != 'agent' %}
@@ -118,6 +119,7 @@
         </div>
         <div id="divider" class="resizeable"></div>
     </div>
+{% endblock %}
     <!-- /Sidebar -->
 
     <div id="content">
