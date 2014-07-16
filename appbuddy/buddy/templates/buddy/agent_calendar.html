@@ -1,0 +1,61 @@
+{% extends 'bracket.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% block page_title %}
+    Attendance Calendar - {{ agent.name }}
+{% endblock %}
+{% block content %}
+    <div class="container">
+    <div class="row">
+        <div class="col-md-11">
+            <a href="{% url 'agent-list' %}" class="btn btn-darkblue">Back</a>
+        </div>
+    </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div id="calendar">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.css' %}"/>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/fullcalendar/moment.min.js' %}"></script>
+    <script src="{% static 'js/fullcalendar/fullcalendar.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#calendar").fullCalendar({
+                header: {
+                    left: '',
+                    center: 'title',
+                    right: 'prev,next'
+
+                },
+                events: {
+                    url: '{% url "agent-view-attendance-events" agent.id %}',
+                    type : 'GET',
+                    success: function(data) {
+                        console.log(data);
+                    },
+                    data: {
+                        start: '2014-07-01',
+                        end: '2014-07-31'
+                    }
+
+                },
+                editable: false,
+{#                viewRender: function(view, element) {#}
+{#                    console.log(view.intervalStart);#}
+{#                    view.calendar.fetchEvents()#}
+{#                }#}
+            });
+        });
+    </script>
+{% endblock %}

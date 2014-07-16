@@ -6,13 +6,15 @@
 {% block content %}
     {% block top_content %}{% endblock %}
     <div class="row">
-        <div class="col-md-11">
-            <div class="row pull-right">
+            <div class="pull-right">
                 {% block extra_action_buttons %} {% endblock %}
                 {% block action_buttons %}
                     <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
                 {% endblock %}
             </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
             <p></p>
 
             <form class="form form-inline" action="" method="get">

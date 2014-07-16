@@ -1,6 +1,7 @@
 from annoying.functions import get_object_or_None
 from braces.views import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
+from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
 
 # Create your views here.
@@ -249,7 +250,7 @@ class AgentInfoListView(BaseFilterView):
     title = 'Promoter'
     title_singular = 'Promoters'
     type_name = 'agent'
-    header_names = ['Agent Code', 'Name', 'City', 'Mobile Number', 'Location Assigned']
+    header_names = ['Agent Code', 'Name', 'City', 'Mobile Number', 'Location Assigned', 'Landline Number']
 
     def get_queryset(self):
         if not self.request.user.is_superuser:
@@ -303,6 +304,19 @@ class AgentInfoAttendanceView(LoginRequiredMixin, View):
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super(AgentInfoAttendanceView, self).dispatch(request, *args, **kwargs)
+
+
+class AgentCalendarView(LoginRequiredMixin, TemplateView):
+    template_name = 'buddy/agent_calendar.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super(AgentCalendarView,self).get_context_data(**kwargs)
+        print kwargs
+        agent_id = kwargs['pk']
+        agent = get_object_or_None(AgentInfo, pk=agent_id)
+        context['agent'] = agent
+        return context
 
 
 class LocationListView(BaseFilterView):
@@ -373,3 +387,19 @@ class LocationAssignView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('locations-list')
+
+
+class AgentCalendarEventView(LoginRequiredMixin, View):
+    def get(self, request, **kwargs):
+        agent_id = kwargs.get('pk')
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+        attendances = AgentAttendance.objects.filter(agent_info__id=agent_id).filter(created__gte=start).filter(
+            created__lt=end)
+        rows = [];
+        for attendance in attendances:
+            row = {'id': attendance.id, 'title': attendance.description, 'allDay': True, 'start': attendance.created,
+                   'backgroundColor': 'green'}
+            rows.append(row)
+        result = json.dumps(rows, cls=DjangoJSONEncoder)
+        return HttpResponse(result, 'application/json')
