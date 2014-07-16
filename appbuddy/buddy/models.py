@@ -15,7 +15,7 @@ MOBILE_CHOICES = Choices(('android', 'Android'), ('iOS', 'iOS'), ('others', 'Oth
 
 
 class CityInfo(TimeStampedModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     class Meta:
         verbose_name = 'City'
