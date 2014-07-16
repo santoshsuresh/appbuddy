@@ -1,9 +1,7 @@
 {% extends 'buddy/_filter.html' %}
 
 {% block action_buttons %}
-    {%  if not request.user.is_superuser %}
         <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
-    {% endif %}
 {% endblock %}
 
 {% block extra_action_buttons %}

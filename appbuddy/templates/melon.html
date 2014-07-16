@@ -85,16 +85,21 @@
             {% if request.user.is_superuser or request.user.type != 'agent' %}
                 <!--=== Navigation ===-->
                 <ul id="nav">
+                    <li><a href="{% url 'cities-list' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                    </li>
+
                     {% if request.user.is_superuser %}
                         <li><a href="{% url 'cities-list' %}"><i class="fa fa-university"></i> <span>Cities</span></a>
+                        </li>
+                        <li><a href="{% url 'cards-list' %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
+                        <li><a href="{% url 'categories-list' %}"><i class="fa fa-th-list"></i> <span>Categories</span></a>
                         </li>
                         <li><a href="{% url 'devices-list' %}"><i class="fa fa-desktop"></i> <span>Hotspots</span></a>
                         </li>
                         <li><a href="{% url 'applications-list' %}"><i class="fa fa-desktop"></i>
                             <span>Applications</span></a></li>
-                        <li><a href="{% url 'categories-list' %}"><i class="fa fa-th-list"></i> <span>Categories</span></a>
-                        </li>
-                        <li><a href="{% url 'cards-list' %}"><i class="fa fa-cube"></i> <span>Data Cards</span></a></li>
+
+
                         <li><a href="{% url 'businesspartners-list' %}"><i class="fa fa-suitcase"></i> <span>Business Partners</span></a>
                         </li>
                     {% endif %}
@@ -150,9 +155,9 @@
                     </div>
                 </div-->
                 <div class="col-md-12">
-                {% block content %}
-                    <p>This will be the dashboard</p>
-                {% endblock content %}
+                    {% block content %}
+                        <p>This will be the dashboard</p>
+                    {% endblock content %}
                 </div>
 
                 <!-- /.col-md-12 -->
