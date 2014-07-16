@@ -20,7 +20,7 @@
         <td>{{ obj.partner }}</td>
         <td>{{ obj.city }}</td>
         <td>{{ obj.store_manager_name }}</td>
-        <td>{{ obj.device_info }}</td>
+        <td><a href="{% url 'devices-edit' obj.device_info.id %}">{{ obj.device_info }}</a></td>
         <td>{{ obj.agent }}</td>
         <td class="table-action">
             <a href="{% url 'assign-location' obj.pk %}"><i class="fa fa-edit"></i></a>

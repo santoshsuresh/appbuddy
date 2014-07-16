@@ -34,7 +34,7 @@ class DeviceInfoForm(ModelForm):
             'card_info',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'devices-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -54,7 +54,7 @@ class CategoryForm(ModelForm):
             'name',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'categories-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -74,7 +74,7 @@ class CityInfoForm(ModelForm):
             'name',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'cities-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -96,7 +96,7 @@ class DataCardInfoForm(ModelForm):
             'mobile_number',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'cards-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -128,7 +128,7 @@ class LocationInfoForm(ModelForm):
             'longitude',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'locations-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -206,7 +206,7 @@ class BusinessPartnerCreationForm(BaseUserCreationForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'businesspartners-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -258,7 +258,7 @@ class AgentInfoCreationForm(BaseUserCreationForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'agent-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -307,7 +307,7 @@ class LocationPartnerCreationForm(BaseUserCreationForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'locationpartners-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -349,7 +349,7 @@ class BusinessPartnerChangeForm(forms.ModelForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'businesspartners-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -392,7 +392,7 @@ class LocationPartnerChangeForm(forms.ModelForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'locationpartners-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -442,7 +442,7 @@ class AgentInfoChangeForm(forms.ModelForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'agent-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -479,7 +479,7 @@ class AppInfoForm(forms.ModelForm):
             HTML("<br/>"),
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'applications-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
@@ -546,7 +546,7 @@ class LocationAssignForm(ModelForm):
             'agent',
             FormActions(
                 Submit('submit', 'Submit', css_class='btn-primary'),
-                HTML('<a href="{% url \'locations-list\' %}" class="btn"/>Cancel</a>'),
+                HTML('<a href="#" class="btn cancel"/>Cancel</a>'),
                 css_class='center-block form-center text-center'
             )
         )
