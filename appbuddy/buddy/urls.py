@@ -17,6 +17,7 @@ router.register('urls', WhitelistUrlViewSet)
 
 urlpatterns = patterns('',
     url(r'^api/v1/', include(router.urls)),
+    url(r'^melon/$', TemplateView.as_view(template_name='melon.html')),
 
     url(r'^devices/$', DeviceInfoListView.as_view(),name='devices-list'),
     url(r'^devices/add/$', DeviceInfoCreateView.as_view(), name='devices-create'),
