@@ -1,4 +1,5 @@
 {% extends 'bracket.html' %}
+{% load staticfiles %}
 {% load crispy_forms_tags %}
 {% block page_title %}
     <i class="fa {% block icon_class %}{% endblock %}"></i> Add {% block title %}Title{% endblock %}
@@ -11,4 +12,17 @@
             {% crispy formset %}
         {% endif %}
     </div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/chosen.css' %}"/>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $(".select").chosen({disable_search_threshold: 10})
+        })
+    </script>
 {% endblock %}
