@@ -1,9 +1,7 @@
 {% extends 'buddy/_filter.html' %}
 
 {% block action_buttons %}
-    {%  if not request.user.is_superuser %}
-        <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
-    {% endif %}
+    <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
 {% endblock %}
 
 {% block extra_action_buttons %}
@@ -22,7 +20,11 @@
         <td>{{ obj.partner }}</td>
         <td>{{ obj.city }}</td>
         <td>{{ obj.store_manager_name }}</td>
-        <td>{{ obj.device_info }}</td>
+        {% if request.user.is_superuser %}
+            <td><a href="{% url 'devices-edit' obj.device_info.id %}">{{ obj.device_info }}</a></td>
+        {% else %}
+            <td>{{ obj.device_info }}</td>
+        {% endif %}
         <td>{{ obj.agent }}</td>
         <td class="table-action">
             <a href="{% url 'assign-location' obj.pk %}"><i class="fa fa-edit"></i></a>

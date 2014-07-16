@@ -1,49 +1,59 @@
-{% extends 'bracket.html' %}
+{% extends 'melon.html' %}
 {% load crispy_forms_tags %}
 {% block page_title %}
-     {{ title }}
+    {{ title }}
 {% endblock %}
 {% block content %}
-    {% block top_content %}{% endblock %}
-    <div class="row">
-            <div class="pull-right">
-                {% block extra_action_buttons %} {% endblock %}
-                {% block action_buttons %}
-                    <a class="btn btn-primary" href="{% url type_name|add:'-create' %}">Add {{ title_singular }}</a>
-                {% endblock %}
+    <div class="widget box">
+        {% block top_content %}{% endblock %}
+        <div class="widget-header">
+            <h4><i class="fa fa-reorder"></i></h4>
+            <div class="toolbar no-padding">
+            <div class="btn-group">
+                    {% block extra_action_buttons %} {% endblock %}
+                    {% block action_buttons %}
+                        <a class="btn btn-primary btn-sm" href="{% url type_name|add:'-create' %}"><i class="fa fa-plus"></i> Add {{ title_singular }}</a>
+                    {% endblock %}
+
             </div>
-    </div>
-    <div class="row">
-        <div class="col-md-11">
-            <p></p>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <p></p>
 
-            <form class="form form-inline" action="" method="get">
-                {% crispy filter.form %}
-            </form>
+                    <form class="form form-inline" action="" method="get">
+                        {% crispy filter.form %}
+                    </form>
 
-            {% if object_list %}
-                <p></p>
-                <div class="table-responsive">
-                    <table class="table table-hover mb30 table-striped {% block extra_table_class %}{% endblock %}">
-                        <thead>
-                        <tr>
-                            {% for header in headers %}
-                                <th>{{ header }}</th>
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for obj in object_list %}
-                            {% block table_content %}{% endblock %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                    {% if object_list %}
+                        <p></p>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb30 table-striped
+                                    {% block extra_table_class %}{% endblock %}">
+                                <thead>
+                                <tr>
+                                    {% for header in headers %}
+                                        <th>{{ header }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for obj in object_list %}
+                                    {% block table_content %}{% endblock %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
 
-                    {% block extra_content %}{% endblock %}
-                </div>
-                </div>
-            {% else %}
-                <h3>No {{ title }} Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one</h3>
-            {% endif %}
+                            {% block extra_content %}{% endblock %}
+                        </div>
+                        </div>
+                    {% else %}
+                        <h3>No {{ title }} Found!! Start by <a href="{% url type_name|add:'-create' %}">adding</a> one
+                        </h3>
+                    {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}

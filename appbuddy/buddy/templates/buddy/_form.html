@@ -1,4 +1,4 @@
-{% extends 'bracket.html' %}
+{% extends 'melon.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 {% block page_title %}
@@ -11,7 +11,10 @@
         {% if formset %}
             {% crispy formset %}
         {% endif %}
+        <br/>
+        <br/>
     </div>
+
 {% endblock %}
 
 {% block extra_css %}
@@ -19,10 +22,17 @@
     <link rel="stylesheet" href="{% static 'css/chosen.css' %}"/>
 {% endblock %}
 {% block extra_js %}
+    {{ block.super }}
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
     <script>
         $(document).ready(function () {
-            $(".select").chosen({disable_search_threshold: 10})
+            $(".select").chosen({disable_search_threshold: 3});
+            $(".selectmultiple").chosen({disable_search_threshold: 3});
+
+            $("a.cancel").click(function (e) {
+                e.preventDefault();
+                history.back();
+            });
         })
     </script>
 {% endblock %}
