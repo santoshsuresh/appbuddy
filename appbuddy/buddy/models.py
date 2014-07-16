@@ -221,11 +221,12 @@ class AgentInfo(BaseUser):
     def save(self, *args, **kwargs):
         self.type = 'agent'
         self.is_active = 'True'
-        max_code = AgentInfo.objects.all().aggregate(Max('agent_id'))
-        if max_code['agent_id__max'] is None:
-            self.agent_id = 20000
-        else:
-            self.agent_id = max_code['agent_id__max'] + 1
+        if self.pk is None:
+            max_code = AgentInfo.objects.all().aggregate(Max('agent_id'))
+            if max_code['agent_id__max'] is None:
+                self.agent_id = 20000
+            else:
+                self.agent_id = max_code['agent_id__max'] + 1
         super(AgentInfo, self).save(*args, **kwargs)
 
     def __unicode__(self):

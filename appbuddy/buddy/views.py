@@ -5,25 +5,20 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
 
 # Create your views here.
+from crispy_forms.layout import Field
 from django.db.models import Q
-from django.forms.models import modelformset_factory
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView, TemplateView, View
 from django_filters.views import FilterView
 import json
-from rest_framework import status, permissions
-from rest_framework.response import Response
-from rest_framework.views import APIView
-import datetime
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter, \
     LocationInfoFilter, AgentInfoFilter, AppInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
     BusinessPartnerChangeForm, LocationPartnerCreationForm, LocationPartnerChangeForm, LocationInfoForm, \
     AgentInfoCreationForm, AgentInfoChangeForm, AppInfoForm, LocationAssignForm
 from .models import *
-from .serializers import AppBuddySerializer, DownloadLogSerializer
 
 
 class SuperuserRequiredMixin(object):
@@ -227,11 +222,18 @@ class LocationPartnerCreateView(LoginRequiredMixin, CreateView):
     model = LocationPartner
     form_class = LocationPartnerCreationForm
 
+
     def get_success_url(self):
         return reverse('locationpartners-list')
 
     def get_initial(self):
         return {'type': 'location_partner', 'business_partner': self.request.user}
+
+    def get_form(self, form_class):
+        form = super(LocationPartnerCreateView, self).get_form(form_class)
+        if self.request.user.type == 'business_partner':
+            form.helper['business_partner'].wrap(Field, type='hidden')
+        return form
 
 
 class LocationPartnerUpdateView(LoginRequiredMixin, UpdateView):
@@ -241,8 +243,12 @@ class LocationPartnerUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('locationpartners-list')
 
-    def get_initial(self):
-        return {'type': 'location_partner', 'business_partner': self.request.user}
+    def get_form(self, form_class):
+        form = super(LocationPartnerUpdateView, self).get_form(form_class)
+        if self.request.user.type == 'business_partner':
+            form.helper['business_partner'].wrap(Field, type='hidden')
+        return form
+
 
 
 class AgentInfoListView(BaseFilterView):
@@ -296,6 +302,8 @@ class AgentInfoAttendanceView(LoginRequiredMixin, View):
         result = {'success': True}
         if agent is not None:
             text = self.request.POST.get('description')
+            if text is None or text == '':
+                text = 'No comment was added'
             attendance = AgentAttendance.objects.create(agent_info=agent, description=text)
             agent.last_present_date = attendance.created
             agent.save()

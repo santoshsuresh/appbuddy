@@ -294,7 +294,7 @@ class LocationPartnerCreationForm(BaseUserCreationForm):
                 'email',
                 'password1',
                 'password2',
-                Field('business_partner', type='hidden')
+                'business_partner'
             ),
             Fieldset(
                 'Personal Info',
@@ -378,7 +378,7 @@ class LocationPartnerChangeForm(forms.ModelForm):
             Fieldset(
                 'Authentication Information',
                 'email',
-                Field('business_partner', type='hidden'),
+                'business_partner',
                 'is_active'
             ),
             Fieldset(
