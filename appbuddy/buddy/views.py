@@ -16,6 +16,7 @@ import json
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import datetime
 from .filters import DeviceInfoFilter, CategoryFilter, CityInfoFilter, DataCardFilter, BusinessPartnerFilter, \
     LocationInfoFilter, AgentInfoFilter, AppInfoFilter
 from .forms import DeviceInfoForm, CategoryForm, CityInfoForm, DataCardInfoForm, BusinessPartnerCreationForm, \
@@ -250,7 +251,7 @@ class AgentInfoListView(BaseFilterView):
     title = 'Promoter'
     title_singular = 'Promoters'
     type_name = 'agent'
-    header_names = ['Agent Code', 'Name', 'City', 'Mobile Number', 'Location Assigned', 'Landline Number']
+    header_names = ['Agent Code', 'Name', 'Last Seen On', 'City', 'Mobile Number', 'Location Assigned', 'Landline Number']
 
     def get_queryset(self):
         if not self.request.user.is_superuser:
@@ -296,6 +297,8 @@ class AgentInfoAttendanceView(LoginRequiredMixin, View):
         if agent is not None:
             text = self.request.POST.get('description')
             attendance = AgentAttendance.objects.create(agent_info=agent, description=text)
+            agent.last_present_date = attendance.created
+            agent.save()
             result['attendance_id'] = attendance.id
         else:
             result = {'success': False, 'reason': 'Agent could be found'}

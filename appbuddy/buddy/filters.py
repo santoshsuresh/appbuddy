@@ -133,18 +133,20 @@ class AgentInfoFilter(FilterSet):
 
     class Meta:
         model = AgentInfo
-        fields = ['city', 'location__partner', 'first_name', 'mobile_number']
+        fields = ['city', 'location__partner', 'first_name', 'mobile_number', 'last_present_date']
 
     def __init__(self, *args, **kwargs):
         super(AgentInfoFilter, self).__init__(*args, **kwargs)
         helper = FormHelper()
         helper.form_class = 'form-inline'
+        helper.form_show_labels = False
         helper.field_template = 'bootstrap3/layout/inline_field.html'
         helper.layout = Layout(
             'city',
             'location__partner',
             'first_name',
             'mobile_number',
+            Field('last_present_date', placeholder='Select Date'),
             Submit('submit', 'Filter', css_class='btn-primary'),
         )
         self.form.helper = helper

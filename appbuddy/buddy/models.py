@@ -212,6 +212,7 @@ class AgentInfo(BaseUser):
     make = models.CharField(max_length=50, default=None, blank=True, null=True)
     model = models.CharField(max_length=50, default=None, blank=True, null=True)
     business_partner = models.ForeignKey('BusinessPartner', related_name='agents')
+    last_present_date = models.DateField(blank=True, null=True, default=None)
 
     class Meta:
         verbose_name = 'Promoter'

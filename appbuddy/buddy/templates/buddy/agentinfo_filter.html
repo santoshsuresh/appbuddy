@@ -1,15 +1,12 @@
 {% extends 'buddy/_filter.html' %}
-
-{% block extra_action_buttons %}
-    <a href="{% url 'locations-list' %}" class="btn btn-success">Show All Present Today</a>
-    <a href="{% url 'locations-list' %}" class="btn btn-danger">Show All Absent Today</a>
-{% endblock %}
+{% load staticfiles %}
 {% block table_content %}
     <tr>
         <td><a href="{% url type_name|add:'-edit' pk=obj.pk %}">{{ obj.agent_id }}</a>
         </td>
 
         <td>{{ obj.name }}</td>
+        <td>{{ obj.last_present_date }}</td>
         <td>{{ obj.city }}</td>
         <td>{{ obj.mobile_number }}</td>
         <td>{{ obj.location }}</td>
@@ -66,8 +63,18 @@
     </div>
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/datepicker.css' %}"/>
+{% endblock %}
+
 {% block extra_js %}
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
     <script>
+
+        $(document).ready(function(){
+            $(".dateinput").datepicker();
+        });
+
         $(".mark-attendance").click(function (e) {
             var name = $(this).data('agent-name');
             var id = $(this).data('agent-id');
