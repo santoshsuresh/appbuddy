@@ -44,7 +44,7 @@ class BaseFilterView(LoginRequiredMixin, FilterView):
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'bracket.html'
+    template_name = 'melon.html'
 
 
 class DeviceInfoListView(BaseFilterView):
